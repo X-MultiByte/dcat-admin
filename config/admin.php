@@ -11,7 +11,7 @@ return [
     | login page.
     |
     */
-    'name' => 'Dcat Admin',
+    'name' => 'Admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +22,7 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo' => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> &nbsp;Dcat Admin',
+    'logo' => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> &nbsp;Admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -330,9 +330,9 @@ return [
         'sidebar_collapsed' => false,
 
         // light, primary, dark
-        'sidebar_style' => 'light',
+        'sidebar_style' => 'dark',
 
-        'dark_mode_switch' => false,
+        'dark_mode_switch' => true,
 
         // bg-primary, bg-info, bg-warning, bg-success, bg-danger, bg-dark
         'navbar_color' => '',

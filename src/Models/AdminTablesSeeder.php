@@ -14,7 +14,7 @@ class AdminTablesSeeder extends Seeder
     public function run()
     {
         $createdAt = date('Y-m-d H:i:s');
-
+        
         // create a user.
         Administrator::truncate();
         Administrator::create([
@@ -23,7 +23,7 @@ class AdminTablesSeeder extends Seeder
             'name'       => 'Administrator',
             'created_at' => $createdAt,
         ]);
-
+        
         // create a role.
         Role::truncate();
         Role::create([
@@ -31,10 +31,10 @@ class AdminTablesSeeder extends Seeder
             'slug'       => Role::ADMINISTRATOR,
             'created_at' => $createdAt,
         ]);
-
+        
         // add role to user.
         Administrator::first()->roles()->save(Role::first());
-
+        
         //create a permission
         Permission::truncate();
         Permission::insert([
@@ -101,68 +101,68 @@ class AdminTablesSeeder extends Seeder
         ]);
 
 //        Role::first()->permissions()->save(Permission::first());
-
+        
         // add default menus.
         Menu::truncate();
         Menu::insert([
             [
-                'parent_id'     => 0,
-                'order'         => 1,
-                'title'         => 'Index',
-                'icon'          => 'feather icon-bar-chart-2',
-                'uri'           => '/',
-                'created_at'    => $createdAt,
+                'parent_id'  => 0,
+                'order'      => 1,
+                'title'      => 'Dashboard',
+                'icon'       => 'fa fa-dashboard',
+                'uri'        => '/',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 0,
-                'order'         => 2,
-                'title'         => 'Admin',
-                'icon'          => 'feather icon-settings',
-                'uri'           => '',
-                'created_at'    => $createdAt,
+                'parent_id'  => 0,
+                'order'      => 2,
+                'title'      => 'Extensions',
+                'icon'       => '',
+                'uri'        => 'auth/extensions',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 2,
-                'order'         => 3,
-                'title'         => 'Users',
-                'icon'          => '',
-                'uri'           => 'auth/users',
-                'created_at'    => $createdAt,
+                'parent_id'  => 0,
+                'order'      => 3,
+                'title'      => 'Admin',
+                'icon'       => 'feather icon-settings',
+                'uri'        => '',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 2,
-                'order'         => 4,
-                'title'         => 'Roles',
-                'icon'          => '',
-                'uri'           => 'auth/roles',
-                'created_at'    => $createdAt,
+                'parent_id'  => 2,
+                'order'      => 4,
+                'title'      => 'Users',
+                'icon'       => '',
+                'uri'        => 'auth/users',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 2,
-                'order'         => 5,
-                'title'         => 'Permission',
-                'icon'          => '',
-                'uri'           => 'auth/permissions',
-                'created_at'    => $createdAt,
+                'parent_id'  => 2,
+                'order'      => 5,
+                'title'      => 'Roles',
+                'icon'       => '',
+                'uri'        => 'auth/roles',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 2,
-                'order'         => 6,
-                'title'         => 'Menu',
-                'icon'          => '',
-                'uri'           => 'auth/menu',
-                'created_at'    => $createdAt,
+                'parent_id'  => 2,
+                'order'      => 6,
+                'title'      => 'Permission',
+                'icon'       => '',
+                'uri'        => 'auth/permissions',
+                'created_at' => $createdAt,
             ],
             [
-                'parent_id'     => 2,
-                'order'         => 7,
-                'title'         => 'Extensions',
-                'icon'          => '',
-                'uri'           => 'auth/extensions',
-                'created_at'    => $createdAt,
+                'parent_id'  => 2,
+                'order'      => 7,
+                'title'      => 'Menu',
+                'icon'       => '',
+                'uri'        => 'auth/menu',
+                'created_at' => $createdAt,
             ],
         ]);
-
+        
         (new Menu())->flushCache();
     }
 }
