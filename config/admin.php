@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin name
@@ -11,8 +11,8 @@ return [
     | login page.
     |
     */
-    'name' => 'Admin',
-
+    'name'                      => 'Admin',
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin logo
@@ -22,8 +22,8 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo' => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> &nbsp;Admin',
-
+    'logo'                      => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> &nbsp;Admin',
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin mini logo
@@ -34,16 +34,16 @@ return [
     | '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo-mini' => '<img src="/vendor/dcat-admin/images/logo.png">',
-
+    'logo-mini'                 => '<img src="/vendor/dcat-admin/images/logo.png">',
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin favicon
     |--------------------------------------------------------------------------
     |
     */
-    'favicon' => null,
-
+    'favicon'                   => null,
+    
     /*
      |--------------------------------------------------------------------------
      | User default avatar
@@ -52,8 +52,8 @@ return [
      | Set a default avatar for newly created users.
      |
      */
-    'default_avatar' => '@admin/images/default-avatar.jpg',
-
+    'default_avatar'            => '@admin/images/default-avatar.jpg',
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin route settings
@@ -64,18 +64,18 @@ return [
     | access through the root path, just set the prefix to empty string.
     |
     */
-    'route' => [
+    'route'                     => [
         'domain' => env('ADMIN_ROUTE_DOMAIN'),
-
+        
         'prefix' => env('ADMIN_ROUTE_PREFIX', 'admin'),
-
+        
         'namespace' => 'App\\Admin\\Controllers',
-
+        
         'middleware' => ['web', 'admin'],
-
+        
         'enable_session_middleware' => false,
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin install directory
@@ -86,8 +86,8 @@ return [
     | be set before running `artisan admin::install` to take effect.
     |
     */
-    'directory' => app_path('Admin'),
-
+    'directory'                 => app_path('Admin'),
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin html title
@@ -96,16 +96,16 @@ return [
     | Html title for all pages.
     |
     */
-    'title' => 'Admin',
-
+    'title'                     => 'Admin',
+    
     /*
     |--------------------------------------------------------------------------
     | Assets hostname
     |--------------------------------------------------------------------------
     |
    */
-    'assets_server' => env('ADMIN_ASSETS_SERVER'),
-
+    'assets_server'             => env('ADMIN_ASSETS_SERVER'),
+    
     /*
     |--------------------------------------------------------------------------
     | Access via `https`
@@ -114,8 +114,8 @@ return [
     | If your page is going to be accessed via https, set it to `true`.
     |
     */
-    'https' => env('ADMIN_HTTPS', false),
-
+    'https'                     => env('ADMIN_HTTPS', false),
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin auth setting
@@ -127,82 +127,82 @@ return [
     | You can specify a controller for `login` `logout` and other auth routes.
     |
     */
-    'auth' => [
+    'auth'                      => [
         'enable' => true,
-
+        
         'controller' => App\Admin\Controllers\AuthController::class,
-
+        
         'guard' => 'admin',
-
+        
         'guards' => [
             'admin' => [
                 'driver'   => 'session',
                 'provider' => 'admin',
             ],
         ],
-
+        
         'providers' => [
             'admin' => [
                 'driver' => 'eloquent',
                 'model'  => Dcat\Admin\Models\Administrator::class,
             ],
         ],
-
+        
         // Add "remember me" to login form
-        'remember' => true,
-
+        'remember'  => true,
+        
         // All method to path like: auth/users/*/edit
         // or specific method to path like: get:auth/users.
-        'except' => [
+        'except'    => [
             'auth/login',
             'auth/logout',
         ],
-
+        
         'enable_session_middleware' => false,
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | The global Grid setting
     |--------------------------------------------------------------------------
     */
-    'grid' => [
-
+    'grid'                      => [
+        
         // The global Grid action display class.
-        'grid_action_class' => Dcat\Admin\Grid\Displayers\DropdownActions::class,
-
+        'grid_action_class'  => Dcat\Admin\Grid\Displayers\DropdownActions::class,
+        
         // The global Grid batch action display class.
         'batch_action_class' => Dcat\Admin\Grid\Tools\BatchActions::class,
-
+        
         // The global Grid pagination display class.
-        'paginator_class' => Dcat\Admin\Grid\Tools\Paginator::class,
-
-        'actions' => [
-            'view' => Dcat\Admin\Grid\Actions\Show::class,
-            'edit' => Dcat\Admin\Grid\Actions\Edit::class,
-            'quick_edit' => Dcat\Admin\Grid\Actions\QuickEdit::class,
-            'delete' => Dcat\Admin\Grid\Actions\Delete::class,
+        'paginator_class'    => Dcat\Admin\Grid\Tools\Paginator::class,
+        
+        'actions'         => [
+            'view'         => Dcat\Admin\Grid\Actions\Show::class,
+            'edit'         => Dcat\Admin\Grid\Actions\Edit::class,
+            'quick_edit'   => Dcat\Admin\Grid\Actions\QuickEdit::class,
+            'delete'       => Dcat\Admin\Grid\Actions\Delete::class,
             'batch_delete' => Dcat\Admin\Grid\Tools\BatchDelete::class,
         ],
-
+        
         // The global Grid column selector setting.
         'column_selector' => [
-            'store' => Dcat\Admin\Grid\ColumnSelector\SessionStore::class,
+            'store'        => Dcat\Admin\Grid\ColumnSelector\SessionStore::class,
             'store_params' => [
                 'driver' => 'file',
             ],
         ],
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin helpers setting.
     |--------------------------------------------------------------------------
     */
-    'helpers' => [
+    'helpers'                   => [
         'enable' => true,
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin permission setting
@@ -211,10 +211,10 @@ return [
     | Permission settings for all admin pages.
     |
     */
-    'permission' => [
+    'permission'                => [
         // Whether enable permission.
         'enable' => true,
-
+        
         // All method to path like: auth/users/*/edit
         // or specific method to path like: get:auth/users.
         'except' => [
@@ -224,32 +224,32 @@ return [
             'auth/setting',
         ],
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin menu setting
     |--------------------------------------------------------------------------
     |
     */
-    'menu' => [
-        'cache' => [
+    'menu'                      => [
+        'cache'                => [
             // enable cache or not
             'enable' => false,
             'store'  => 'file',
         ],
-
+        
         // Whether enable menu bind to a permission.
-        'bind_permission' => true,
-
+        'bind_permission'      => true,
+        
         // Whether enable role bind to menu.
-        'role_bind_menu' => true,
-
+        'role_bind_menu'       => true,
+        
         // Whether enable permission bind to menu.
         'permission_bind_menu' => true,
-
+        
         'default_icon' => 'feather icon-circle',
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin upload setting
@@ -259,19 +259,19 @@ return [
     | disk and upload path.
     |
     */
-    'upload' => [
-
+    'upload'                    => [
+        
         // Disk in `config/filesystem.php`.
-        'disk' => 'public',
-
+        'disk'      => 'public',
+        
         // Image and file upload path under the disk above.
         'directory' => [
             'image' => 'images',
             'file'  => 'files',
         ],
-
+    
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | dcat-admin database settings
@@ -280,37 +280,37 @@ return [
     | Here are database settings for dcat-admin builtin model & tables.
     |
     */
-    'database' => [
-
+    'database'                  => [
+        
         // Database connection for following tables.
-        'connection' => '',
-
+        'connection'                => '',
+        
         // User tables and model.
-        'users_table' => 'admin_users',
-        'users_model' => Dcat\Admin\Models\Administrator::class,
-
+        'users_table'               => 'admin_users',
+        'users_model'               => Dcat\Admin\Models\Administrator::class,
+        
         // Role table and model.
-        'roles_table' => 'admin_roles',
-        'roles_model' => Dcat\Admin\Models\Role::class,
-
+        'roles_table'               => 'admin_roles',
+        'roles_model'               => Dcat\Admin\Models\Role::class,
+        
         // Permission table and model.
-        'permissions_table' => 'admin_permissions',
-        'permissions_model' => Dcat\Admin\Models\Permission::class,
-
+        'permissions_table'         => 'admin_permissions',
+        'permissions_model'         => Dcat\Admin\Models\Permission::class,
+        
         // Menu table and model.
-        'menu_table' => 'admin_menu',
-        'menu_model' => Dcat\Admin\Models\Menu::class,
-
+        'menu_table'                => 'admin_menu',
+        'menu_model'                => Dcat\Admin\Models\Menu::class,
+        
         // Pivot table for table above.
-        'role_users_table'       => 'admin_role_users',
-        'role_permissions_table' => 'admin_role_permissions',
-        'role_menu_table'        => 'admin_role_menu',
-        'permission_menu_table'  => 'admin_permission_menu',
-        'settings_table'         => 'admin_settings',
-        'extensions_table'       => 'admin_extensions',
+        'role_users_table'          => 'admin_role_users',
+        'role_permissions_table'    => 'admin_role_permissions',
+        'role_menu_table'           => 'admin_role_menu',
+        'permission_menu_table'     => 'admin_permission_menu',
+        'settings_table'            => 'admin_settings',
+        'extensions_table'          => 'admin_extensions',
         'extension_histories_table' => 'admin_extension_histories',
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | Application layout
@@ -318,34 +318,34 @@ return [
     |
     | This value is the layout of admin pages.
     */
-    'layout' => [
+    'layout'                    => [
         // default, blue, blue-light, green
-        'color' => 'default',
-
+        'color'      => 'default',
+        
         // sidebar-separate
         'body_class' => [],
-
+        
         'horizontal_menu' => false,
-
+        
         'sidebar_collapsed' => false,
-
+        
         // light, primary, dark
-        'sidebar_style' => 'dark',
-
+        'sidebar_style'     => 'dark',
+        
         'dark_mode_switch' => true,
-
+        
         // bg-primary, bg-info, bg-warning, bg-success, bg-danger, bg-dark
-        'navbar_color' => '',
+        'navbar_color'     => '',
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | The exception handler class
     |--------------------------------------------------------------------------
     |
     */
-    'exception_handler' => Dcat\Admin\Exception\Handler::class,
-
+    'exception_handler'         => Dcat\Admin\Exception\Handler::class,
+    
     /*
     |--------------------------------------------------------------------------
     | Enable default breadcrumb
@@ -354,15 +354,15 @@ return [
     | Whether enable default breadcrumb for every page content.
     */
     'enable_default_breadcrumb' => true,
-
+    
     /*
     |--------------------------------------------------------------------------
     | Extension
     |--------------------------------------------------------------------------
     */
-    'extension' => [
+    'extension'                 => [
         // When you use command `php artisan admin:ext-make` to generate extensions,
         // the extension files will be generated in this directory.
-        'dir' => base_path('dcat-admin-extensions'),
+        'dir' => base_path('extensions'),
     ],
 ];

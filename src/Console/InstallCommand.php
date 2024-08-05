@@ -13,21 +13,21 @@ class InstallCommand extends Command
      * @var string
      */
     protected $signature = 'admin:install';
-
+    
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Install the admin package';
-
+    
     /**
      * Install directory.
      *
      * @var string
      */
     protected $directory = '';
-
+    
     /**
      * Execute the console command.
      *
@@ -36,12 +36,12 @@ class InstallCommand extends Command
     public function handle()
     {
         $this->initDatabase();
-
         $this->initAdminDirectory();
-
+        $this->initExtensionDirectory();
+        
         $this->info('Done.');
     }
-
+    
     /**
      * Create tables and seed it.
      *
@@ -50,14 +50,14 @@ class InstallCommand extends Command
     public function initDatabase()
     {
         $this->call('migrate');
-
+        
         $userModel = config('admin.database.users_model');
-
+        
         if ($userModel::count() == 0) {
             $this->call('db:seed', ['--class' => AdminTablesSeeder::class]);
         }
     }
-
+    
     /**
      * Set admin directory.
      *
@@ -67,7 +67,7 @@ class InstallCommand extends Command
     {
         $this->directory = config('admin.directory');
     }
-
+    
     /**
      * Initialize the admin directory.
      *
@@ -76,27 +76,47 @@ class InstallCommand extends Command
     protected function initAdminDirectory()
     {
         $this->setDirectory();
-
+        
         if (is_dir($this->directory)) {
             $this->warn("{$this->directory} directory already exists !");
-
-            return;
+            
+            if ($this->confirm('Do you want to delete '.$this->directory.'?', false)) {
+                $this->deleteDir();
+            } else {
+                $this->error('Installation terminated!');
+                
+                exit;
+            }
+            
         }
-
+        
         $this->makeDir('/');
         $this->line('<info>Admin directory was created:</info> '.str_replace(base_path(), '', $this->directory));
-
+        
         $this->makeDir('Controllers');
         $this->makeDir('Metrics/Examples');
-
+        
         $this->createHomeController();
         $this->createAuthController();
         $this->createMetricCards();
-
+        
         $this->createBootstrapFile();
         $this->createRoutesFile();
     }
-
+    
+    /**
+     * Initialize the extension directory.
+     *
+     * @return void
+     */
+    protected function initExtensionDirectory()
+    {
+        $extension_dir = config('admin.extension_dir');
+        if ( !is_dir($extension_dir)) {
+            $this->laravel['files']->makeDirectory($extension_dir, 0755, true, true);
+        }
+    }
+    
     /**
      * Create HomeController.
      *
@@ -105,8 +125,8 @@ class InstallCommand extends Command
     public function createHomeController()
     {
         $homeController = $this->directory.'/Controllers/HomeController.php';
-        $contents = $this->getStub('HomeController');
-
+        $contents       = $this->getStub('HomeController');
+        
         $this->laravel['files']->put(
             $homeController,
             str_replace(
@@ -117,7 +137,7 @@ class InstallCommand extends Command
         );
         $this->line('<info>HomeController file was created:</info> '.str_replace(base_path(), '', $homeController));
     }
-
+    
     /**
      * Create AuthController.
      *
@@ -126,8 +146,8 @@ class InstallCommand extends Command
     public function createAuthController()
     {
         $authController = $this->directory.'/Controllers/AuthController.php';
-        $contents = $this->getStub('AuthController');
-
+        $contents       = $this->getStub('AuthController');
+        
         $this->laravel['files']->put(
             $authController,
             str_replace(
@@ -138,7 +158,7 @@ class InstallCommand extends Command
         );
         $this->line('<info>AuthController file was created:</info> '.str_replace(base_path(), '', $authController));
     }
-
+    
     /**
      * @return void
      */
@@ -152,9 +172,9 @@ class InstallCommand extends Command
             '/Metrics/Examples/Tickets.php'       => 'metrics/Tickets',
             '/Metrics/Examples/TotalUsers.php'    => 'metrics/TotalUsers',
         ];
-
+        
         $namespace = $this->namespace('Metrics\\Examples');
-
+        
         foreach ($map as $path => $stub) {
             $this->laravel['files']->put(
                 $this->directory.$path,
@@ -166,18 +186,19 @@ class InstallCommand extends Command
             );
         }
     }
-
+    
     /**
      * @param  string  $name
+     *
      * @return string
      */
     protected function namespace($name = null)
     {
         $base = str_replace('\\Controllers', '\\', config('admin.route.namespace'));
-
+        
         return trim($base, '\\').($name ? "\\{$name}" : '');
     }
-
+    
     /**
      * Create routes file.
      *
@@ -186,12 +207,12 @@ class InstallCommand extends Command
     protected function createBootstrapFile()
     {
         $file = $this->directory.'/bootstrap.php';
-
+        
         $contents = $this->getStub('bootstrap');
         $this->laravel['files']->put($file, $contents);
         $this->line('<info>Bootstrap file was created:</info> '.str_replace(base_path(), '', $file));
     }
-
+    
     /**
      * Create routes file.
      *
@@ -200,23 +221,24 @@ class InstallCommand extends Command
     protected function createRoutesFile()
     {
         $file = $this->directory.'/routes.php';
-
+        
         $contents = $this->getStub('routes');
         $this->laravel['files']->put($file, str_replace('DummyNamespace', $this->namespace('Controllers'), $contents));
         $this->line('<info>Routes file was created:</info> '.str_replace(base_path(), '', $file));
     }
-
+    
     /**
      * Get stub contents.
      *
      * @param $name
+     *
      * @return string
      */
     protected function getStub($name)
     {
         return $this->laravel['files']->get(__DIR__."/stubs/$name.stub");
     }
-
+    
     /**
      * Make new directory.
      *
@@ -225,5 +247,10 @@ class InstallCommand extends Command
     protected function makeDir($path = '')
     {
         $this->laravel['files']->makeDirectory("{$this->directory}/$path", 0755, true, true);
+    }
+    
+    protected function deleteDir()
+    {
+        $this->laravel['files']->deleteDirectory($this->directory);
     }
 }
