@@ -111,9 +111,11 @@ class InstallCommand extends Command
      */
     protected function initExtensionDirectory()
     {
-        $extension_dir = config('admin.extension_dir');
+        $extension_dir = config('admin.extension.dir');
+        
         if ( !is_dir($extension_dir)) {
             $this->laravel['files']->makeDirectory($extension_dir, 0755, true, true);
+            $this->line('<info>Extension directory was created:</info> '.$extension_dir);
         }
     }
     
