@@ -99,7 +99,7 @@ class ExtensionMakeCommand extends Command
      */
     public function handle(Filesystem $filesystem)
     {
-        $this->filesystem = $filesystem;
+        $this->filesystem   = $filesystem;
         $this->extensionDir = admin_extension_path();
         
         $this->loadExtensionDefault();
@@ -108,7 +108,7 @@ class ExtensionMakeCommand extends Command
             $this->makeDir();
         }
         
-        $this->package = str_replace('.', '/', $this->argument('name'));
+        $this->package       = str_replace('.', '/', $this->argument('name'));
         $this->extensionName = str_replace('/', '.', $this->package);
         
         $this->basePath = rtrim($this->extensionDir, '/').'/'.ltrim($this->package, '/');
@@ -381,7 +381,7 @@ TEXT;
      * Copy files to extension path.
      *
      * @param  string|array  $from
-     * @param  string|null  $to
+     * @param  string|null   $to
      */
     protected function copy($from, $to = null)
     {

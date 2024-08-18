@@ -85,8 +85,8 @@ class Helper
      * 把给定的值转化为字符串.
      *
      * @param  string|Grid|\Closure|Renderable|Htmlable  $value
-     * @param  array   $params
-     * @param  object  $newThis
+     * @param  array                                     $params
+     * @param  object                                    $newThis
      *
      * @return string
      */
@@ -169,7 +169,7 @@ class Helper
     
     /**
      * @param  string  $url
-     * @param  array  $query
+     * @param  array   $query
      *
      * @return string
      */
@@ -189,7 +189,7 @@ class Helper
     }
     
     /**
-     * @param  string  $url
+     * @param  string                  $url
      * @param  string|array|Arrayable  $keys
      *
      * @return string
@@ -230,7 +230,7 @@ class Helper
     }
     
     /**
-     * @param  string  $url
+     * @param  string        $url
      * @param  string|array  $keys
      *
      * @return bool
@@ -300,8 +300,8 @@ class Helper
     /**
      * 生成层级数据.
      *
-     * @param  array  $nodes
-     * @param  int    $parentId
+     * @param  array        $nodes
+     * @param  int          $parentId
      * @param  string|null  $primaryKeyName
      * @param  string|null  $parentKeyName
      * @param  string|null  $childrenKeyName
@@ -315,9 +315,9 @@ class Helper
         ?string $parentKeyName = null,
         ?string $childrenKeyName = null
     ) {
-        $branch         = [];
-        $primaryKeyName = $primaryKeyName ?: 'id';
-        $parentKeyName  = $parentKeyName ?: 'parent_id';
+        $branch          = [];
+        $primaryKeyName  = $primaryKeyName ?: 'id';
+        $parentKeyName   = $parentKeyName ?: 'parent_id';
         $childrenKeyName = $childrenKeyName ?: 'children';
         
         $parentId = is_numeric($parentId) ? (int) $parentId : $parentId;
@@ -362,14 +362,14 @@ class Helper
     
     /**
      * @param  array  $array
-     * @param  int  $level
+     * @param  int    $level
      *
      * @return string
      */
     public static function exportArray(array &$array, $level = 1)
     {
         $start = '[';
-        $end = ']';
+        $end   = ']';
         
         $txt = "$start\n";
         
@@ -417,7 +417,7 @@ class Helper
      *
      * @param  array  $array
      * @param  mixed  $value
-     * @param  bool  $strict
+     * @param  bool   $strict
      */
     public static function deleteByValue(&$array, $value, bool $strict = false)
     {
@@ -451,7 +451,7 @@ class Helper
      * 颜色转亮.
      *
      * @param  string  $color
-     * @param  int  $amt
+     * @param  int     $amt
      *
      * @return string
      */
@@ -478,7 +478,7 @@ class Helper
      * 颜色转暗.
      *
      * @param  string  $color
-     * @param  int  $amt
+     * @param  int     $amt
      *
      * @return string
      */
@@ -490,7 +490,7 @@ class Helper
     /**
      * 颜色透明度.
      *
-     * @param  string  $color
+     * @param  string        $color
      * @param  float|string  $alpha
      *
      * @return string
@@ -512,7 +512,7 @@ class Helper
     
     /**
      * @param  string  $color
-     * @param  int  $amt
+     * @param  int     $amt
      *
      * @return array
      */
@@ -531,8 +531,8 @@ class Helper
         
         $num = hexdec($color);
         
-        $red  = $format(($num >> 16) + $amt);
-        $blue = $format((($num >> 8) & 0x00FF) + $amt);
+        $red   = $format(($num >> 16) + $amt);
+        $blue  = $format((($num >> 8) & 0x00FF) + $amt);
         $green = $format(($num & 0x0000FF) + $amt);
         
         return [$red, $blue, $green];
@@ -625,9 +625,9 @@ class Helper
     
     /**
      * @param  mixed  $command
-     * @param  int   $timeout
-     * @param  null  $input
-     * @param  null  $cwd
+     * @param  int    $timeout
+     * @param  null   $input
+     * @param  null   $cwd
      *
      * @return Process
      */
@@ -692,7 +692,7 @@ class Helper
      * Limit the number of characters in a string.
      *
      * @param  string  $value
-     * @param  int  $limit
+     * @param  int     $limit
      * @param  string  $end
      *
      * @return string
@@ -766,7 +766,7 @@ class Helper
      * Is input data is has-one relation.
      *
      * @param  Collection  $fields
-     * @param  array  $input
+     * @param  array       $input
      */
     public static function prepareHasOneRelation(Collection $fields, array &$input)
     {
@@ -777,7 +777,7 @@ class Helper
             if (is_array($column)) {
                 foreach ($column as $v) {
                     if (Str::contains($v, '.')) {
-                        $first = explode('.', $v)[0];
+                        $first             = explode('.', $v)[0];
                         $relations[$first] = null;
                     }
                 }
@@ -786,7 +786,7 @@ class Helper
             }
             
             if (Str::contains($column, '.')) {
-                $first = explode('.', $column)[0];
+                $first             = explode('.', $column)[0];
                 $relations[$first] = null;
             }
         });
@@ -807,7 +807,7 @@ class Helper
     /**
      * 设置查询条件.
      *
-     * @param  mixed  $model
+     * @param  mixed   $model
      * @param  string  $column
      * @param  string  $query
      * @param  mixed array $params
@@ -822,7 +822,7 @@ class Helper
             return;
         }
         
-        $method = $query === 'orWhere' ? 'orWhere' : 'where';
+        $method   = $query === 'orWhere' ? 'orWhere' : 'where';
         $subQuery = $query === 'orWhere' ? 'where' : $query;
         
         $model->$method(function ($q) use ($column, $subQuery, $params) {
@@ -833,10 +833,10 @@ class Helper
     /**
      * 设置关联关系查询条件.
      *
-     * @param  mixed  $model
+     * @param  mixed   $model
      * @param  string  $column
      * @param  string  $query
-     * @param  mixed  ...$params
+     * @param  mixed   ...$params
      *
      * @return void
      */
@@ -919,8 +919,8 @@ class Helper
      * If no key is given to the method, the entire array will be replaced.
      *
      * @param  array|\ArrayAccess  $array
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string              $key
+     * @param  mixed               $value
      *
      * @return array
      */
@@ -930,7 +930,7 @@ class Helper
             return $array = $value;
         }
         
-        $keys = explode('.', $key);
+        $keys    = explode('.', $key);
         $default = null;
         
         while (count($keys) > 1) {
@@ -995,7 +995,7 @@ class Helper
     }
     
     /**
-     * @param  string|int  $key
+     * @param  string|int    $key
      * @param  array|object  $arrayOrObject
      *
      * @return bool
@@ -1012,8 +1012,8 @@ class Helper
     /**
      * 跳转.
      *
-     * @param  string  $to
-     * @param  int     $statusCode
+     * @param  string   $to
+     * @param  int      $statusCode
      * @param  Request  $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector

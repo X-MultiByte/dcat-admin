@@ -21,7 +21,7 @@ class VersionManager
     const NO_VERSION_VALUE = 0;
     
     const HISTORY_TYPE_COMMENT = 1;
-    const HISTORY_TYPE_SCRIPT = 2;
+    const HISTORY_TYPE_SCRIPT  = 2;
     
     protected $fileVersions;
     protected $databaseVersions;
@@ -43,7 +43,7 @@ class VersionManager
             return false;
         }
         
-        $currentVersion = $this->getLatestFileVersion($name);
+        $currentVersion  = $this->getLatestFileVersion($name);
         $databaseVersion = $this->getDatabaseVersion($name);
         
         if ($currentVersion === $databaseVersion) {
@@ -112,7 +112,7 @@ class VersionManager
         $extensionHistory = $this->getDatabaseHistory($name);
         $extensionHistory = array_reverse($extensionHistory);
         
-        $stopOnNextVersion = false;
+        $stopOnNextVersion   = false;
         $newExtensionVersion = null;
         
         try {
@@ -257,8 +257,8 @@ class VersionManager
         if ( !isset($this->databaseVersions[$name])) {
             $this->databaseVersions[$name] =
                 Extension::query()
-                    ->where('name', $name)
-                    ->value('version');
+                         ->where('name', $name)
+                         ->value('version');
         }
         
         return $this->databaseVersions[$name] ?? static::NO_VERSION_VALUE;
@@ -298,10 +298,10 @@ class VersionManager
     protected function removeDatabaseComment($name, $version)
     {
         ExtensionHistory::query()
-            ->where('name', $name)
-            ->where('type', static::HISTORY_TYPE_COMMENT)
-            ->where('version', $version)
-            ->delete();
+                        ->where('name', $name)
+                        ->where('type', static::HISTORY_TYPE_COMMENT)
+                        ->where('version', $version)
+                        ->delete();
     }
     
     protected function applyDatabaseScript($name, $version, $script)
@@ -343,11 +343,11 @@ class VersionManager
         
         $this->updater->packDown($this->resolveUpdater($name, $updateFile), function () use ($name, $version, $script) {
             ExtensionHistory::query()
-                ->where('name', $name)
-                ->where('type', static::HISTORY_TYPE_SCRIPT)
-                ->where('version', $version)
-                ->where('detail', $script)
-                ->delete();
+                            ->where('name', $name)
+                            ->where('type', static::HISTORY_TYPE_SCRIPT)
+                            ->where('version', $version)
+                            ->where('detail', $script)
+                            ->delete();
         });
     }
     
@@ -358,10 +358,10 @@ class VersionManager
         }
         
         $historyInfo = ExtensionHistory::query()
-            ->where('name', $name)
-            ->orderBy('id')
-            ->get()
-            ->all();
+                                       ->where('name', $name)
+                                       ->orderBy('id')
+                                       ->get()
+                                       ->all();
         
         return $this->databaseHistory[$name] = $historyInfo;
     }
@@ -369,9 +369,9 @@ class VersionManager
     protected function getLastHistory($name)
     {
         return ExtensionHistory::query()
-            ->where('name', $name)
-            ->orderByDesc('id')
-            ->first();
+                               ->where('name', $name)
+                               ->orderByDesc('id')
+                               ->first();
     }
     
     protected function hasDatabaseHistory($name, $version, $script = null)

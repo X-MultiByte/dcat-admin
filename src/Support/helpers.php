@@ -13,7 +13,7 @@ if ( !function_exists('admin_setting')) {
      * 获取或保存配置参数.
      *
      * @param  string|array  $key
-     * @param  mixed  $default
+     * @param  mixed         $default
      *
      * @return \Dcat\Admin\Support\Setting|mixed
      */
@@ -38,7 +38,7 @@ if ( !function_exists('admin_setting_array')) {
      * 获取配置参数并转化为数组格式.
      *
      * @param  string  $key
-     * @param  mixed  $default
+     * @param  mixed   $default
      *
      * @return \Dcat\Admin\Support\Setting|mixed
      */
@@ -52,9 +52,9 @@ if ( !function_exists('admin_extension_setting')) {
     /**
      * 获取扩展配置参数.
      *
-     * @param  string  $extension
+     * @param  string        $extension
      * @param  string|array  $key
-     * @param  mixed   $default
+     * @param  mixed         $default
      *
      * @return mixed
      */
@@ -73,8 +73,8 @@ if ( !function_exists('admin_section')) {
      * Get the string contents of a section.
      *
      * @param  string  $section
-     * @param  mixed  $default
-     * @param  array  $options
+     * @param  mixed   $default
+     * @param  array   $options
      *
      * @return mixed
      */
@@ -103,9 +103,9 @@ if ( !function_exists('admin_inject_section')) {
      * Injecting content into a section.
      *
      * @param  string  $section
-     * @param  mixed  $content
-     * @param  bool   $append
-     * @param  int    $priority
+     * @param  mixed   $content
+     * @param  bool    $append
+     * @param  int     $priority
      */
     function admin_inject_section(string $section, $content = null, bool $append = true, int $priority = 10)
     {
@@ -117,11 +117,11 @@ if ( !function_exists('admin_inject_section_if')) {
     /**
      * Injecting content into a section.
      *
-     * @param  mixed  $condition
+     * @param  mixed   $condition
      * @param  string  $section
-     * @param  mixed  $content
-     * @param  bool   $append
-     * @param  int    $priority
+     * @param  mixed   $content
+     * @param  bool    $append
+     * @param  int     $priority
      */
     function admin_inject_section_if($condition, $section, $content = null, bool $append = false, int $priority = 10)
     {
@@ -149,7 +149,7 @@ if ( !function_exists('admin_inject_default_section')) {
     /**
      * Injecting content into a section.
      *
-     * @param  string  $section
+     * @param  string                               $section
      * @param  string|Renderable|Htmlable|callable  $content
      */
     function admin_inject_default_section(string $section, $content)
@@ -212,7 +212,7 @@ if ( !function_exists('admin_trans')) {
      * Translate the given message.
      *
      * @param  string  $key
-     * @param  array  $replace
+     * @param  array   $replace
      * @param  string  $locale
      *
      * @return \Illuminate\Contracts\Translation\Translator|string|array|null
@@ -268,8 +268,8 @@ if ( !function_exists('admin_url')) {
      * Get admin url.
      *
      * @param  string  $path
-     * @param  mixed  $parameters
-     * @param  bool   $secure
+     * @param  mixed   $parameters
+     * @param  bool    $secure
      *
      * @return string
      */
@@ -315,7 +315,7 @@ if ( !function_exists('admin_toastr')) {
      *
      * @param  string  $message
      * @param  string  $type
-     * @param  array  $options
+     * @param  array   $options
      */
     function admin_toastr($message = '', $type = 'success', $options = [])
     {
@@ -397,8 +397,8 @@ if ( !function_exists('admin_route')) {
      * 根据路由别名获取url.
      *
      * @param  string|null  $route
-     * @param  array  $params
-     * @param  bool   $absolute
+     * @param  array        $params
+     * @param  bool         $absolute
      *
      * @return string
      */
@@ -471,7 +471,7 @@ if ( !function_exists('admin_color')) {
 if ( !function_exists('admin_view')) {
     /**
      * @param  string  $view
-     * @param  array  $data
+     * @param  array   $data
      *
      * @return string
      *
@@ -486,7 +486,7 @@ if ( !function_exists('admin_view')) {
 if ( !function_exists('admin_script')) {
     /**
      * @param  string  $js
-     * @param  bool  $direct
+     * @param  bool    $direct
      *
      * @return void
      */
@@ -588,8 +588,8 @@ if ( !function_exists('admin_redirect')) {
     /**
      * 跳转.
      *
-     * @param  string  $to
-     * @param  int     $statusCode
+     * @param  string   $to
+     * @param  int      $statusCode
      * @param  Request  $request
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
@@ -612,8 +612,8 @@ if ( !function_exists('format_byte')) {
     function format_byte($input, $dec = 0)
     {
         $prefix_arr = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $value = round($input, $dec);
-        $i = 0;
+        $value      = round($input, $dec);
+        $i          = 0;
         while ($value > 1024) {
             $value /= 1024;
             $i++;
