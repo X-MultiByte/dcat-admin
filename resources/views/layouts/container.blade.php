@@ -1,6 +1,6 @@
 <body
         class="dcat-admin-body sidebar-mini layout-fixed {{ $configData['body_class']}} {{ $configData['sidebar_class'] }}
-        {{ $configData['navbar_class'] === 'fixed-top' ? 'navbar-fixed-top' : '' }} " >
+        {{ $configData['navbar_class'] === 'fixed-top' ? 'navbar-fixed-top' : '' }} ">
 
 <script>
     var Dcat = CreateDcat({!! Dcat\Admin\Admin::jsVariables() !!});
@@ -10,9 +10,9 @@
 
 <div class="wrapper">
     @include('admin::partials.sidebar')
-
+    
     @include('admin::partials.navbar')
-
+    
     <div class="app-content content">
         <div class="content-wrapper" id="{{ $pjaxContainerId }}" style="top: 0;min-height: 900px;">
             @yield('app')
@@ -24,11 +24,11 @@
     <p class="clearfix blue-grey lighten-2 mb-0 text-center">
             <span class="text-center d-block d-md-inline-block mt-25">
                 Powered by
-                <a target="_blank" href="https://github.com/jqhph/dcat-admin">Dcat Admin</a>
+                <a target="_blank" href="{{ \Dcat\Admin\Admin::PROJECT_URL }}">{{ Dcat\Admin\Admin::PROJECT_NAME }}</a>
                 <span>&nbsp;·&nbsp;</span>
                 v{{ Dcat\Admin\Admin::VERSION }}
             </span>
-
+        
         <button class="btn btn-primary btn-icon scroll-top pull-right" style="position: fixed;bottom: 2%; right: 10px;display: none">
             <i class="feather icon-arrow-up"></i>
         </button>

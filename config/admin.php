@@ -364,5 +364,79 @@ return [
         // When you use command `php artisan admin:ext-make` to generate extensions,
         // the extension files will be generated in this directory.
         'dir' => base_path('extensions'),
+        
+        'default' => [
+            
+            // Extension base namespace.
+            'namespace'      => 'XMultibyte',
+            
+            // Logo
+            // size 100x100px.
+            'logo'           => public_path('/vendor/dcat-admin/images/extension/logo.png'),
+            
+            // Description
+            'description'    => 'Description...',
+            
+            
+            // Authors Information.
+            'authors'        => [
+                [
+                    'name'  => 'Roy',
+                    'email' => 'roy@xmultibyte.com',
+                ],
+            ],
+            
+            // Keywords
+            // An array of keywords that the package is related to.
+            'keywords'       => [
+                'laravel',
+                'dcat-admin',
+                'extension',
+            ],
+            
+            // type of package.
+            // this value default is "library".
+            'type'           => 'library',
+            
+            // Version
+            'version'        => '1.0.0',
+            
+            // The license of the package.
+            // This can be either a string or an array of strings.
+            'license'        => 'MIT',
+            
+            // create config for extension.
+            'config'         => true,
+            'config_default' => '////',
+            
+            // create facade for extension.
+            'facade'         => true,
+            
+            // add extension to menu.
+            'menu'           => true,
+            
+            // create directories
+            'dirs'           => [
+                'updates',
+                'routes',
+                'resources/assets/css',
+                'resources/assets/js',
+                'resources/views',
+                'resources/lang',
+                'src/Models',
+                'src/Http/Controllers',
+                'src/Http/Middleware',
+            
+            ],
+            
+            'files' => [
+                'view.stub'       => 'resources/views/index.blade.php',
+                'js.stub'         => 'resources/assets/js/index.js',
+                'css.stub'        => 'resources/assets/css/index.css',
+                '.gitignore.stub' => '.gitignore',
+                'README.md.stub'  => 'README.md',
+                'version.stub'    => 'version.php',
+            ],
+        ],
     ],
 ];

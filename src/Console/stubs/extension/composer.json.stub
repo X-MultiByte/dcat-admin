@@ -1,16 +1,12 @@
 {
     "name": "{package}",
-    "alias": "{alias}",
-    "description": "Description...",
-    "type": "library",
-    "keywords": ["dcat-admin", "extension"],
+    "description": "{description}",
+    "type": "{type}",
+    "keywords": [{keywords}],
     "homepage": "https://github.com/{package}",
-    "license": "MIT",
+    "license": "{license}",
     "authors": [
-        {
-            "name": "your name",
-            "email": "your email"
-        }
+        {authors}
     ],
     "require": {
         "php": ">=7.1.0",
@@ -22,11 +18,11 @@
         }
     },
     "extra": {
-        "dcat-admin": "{namespace}{className}ServiceProvider",
-        "laravel": {
-            "providers": [
-                "{namespace}{className}ServiceProvider"
-            ]
-        }
+            "dcat-admin": "{namespace}{className}ServiceProvider",
+            "laravel": {
+                "providers": [
+                    "{namespace}{className}ServiceProvider"
+                ]
+            }
     }
 }

@@ -11,4 +11,6 @@ class Setting extends Form
         $this->text('key1')->required();
         $this->text('key2')->required();
     }
+
+    public function
 }

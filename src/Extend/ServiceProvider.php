@@ -13,85 +13,85 @@ use Symfony\Component\Console\Output\NullOutput;
 abstract class ServiceProvider extends LaravelServiceProvider
 {
     use CanImportMenu;
-
+    
     const TYPE_THEME = 'theme';
-
+    
     /**
      * @var ComposerProperty
      */
     public $composerProperty;
-
+    
     /**
      * @var string
      */
     protected $name;
-
+    
     /**
      * @var string
      */
     protected $packageName;
-
+    
     /**
      * @var string
      */
     protected $type;
-
+    
     /**
      * @var string
      */
     protected $path;
-
+    
     /**
      * @var array
      */
     protected $js = [];
-
+    
     /**
      * @var array
      */
     protected $css = [];
-
+    
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
     public $output;
-
+    
     /**
      * @var array
      */
     protected $config;
-
+    
     /**
      * @var array
      */
     protected $middleware = [];
-
+    
     /**
      * @var array
      */
     protected $exceptRoutes = [];
-
+    
     public function __construct($app)
     {
         parent::__construct($app);
-
+        
         $this->output = new NullOutput();
     }
-
+    
     /**
      * {@inheritdoc}
      */
     final public function boot()
     {
         $this->autoRegister();
-
+        
         if ($this->disabled()) {
             return;
         }
-
+        
         $this->init();
     }
-
+    
     /**
      * 初始化操作.
      *
@@ -102,26 +102,26 @@ abstract class ServiceProvider extends LaravelServiceProvider
         if ($views = $this->getViewPath()) {
             $this->loadViewsFrom($views, $this->getName());
         }
-
+        
         if ($lang = $this->getLangPath()) {
             $this->loadTranslationsFrom($lang, $this->getName());
         }
-
+        
         if ($routes = $this->getRoutes()) {
             $this->registerRoutes($routes);
         }
-
+        
         if ($this->middleware()) {
             $this->addMiddleware();
         }
-
+        
         if ($this->exceptRoutes) {
             $this->addExceptRoutes();
         }
-
+        
         $this->aliasAssets();
     }
-
+    
     /**
      * 自动注册扩展.
      */
@@ -130,10 +130,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
         if ($this->getName()) {
             return;
         }
-
+        
         Admin::extension()->addExtension($this);
     }
-
+    
     /**
      * 获取扩展名称.
      *
@@ -143,7 +143,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->name ?: ($this->name = str_replace('/', '.', $this->getPackageName()));
     }
-
+    
     /**
      * 获取扩展别名.
      *
@@ -151,13 +151,13 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function getAlias()
     {
-        if (! $this->composerProperty) {
+        if ( !$this->composerProperty) {
             return;
         }
-
+        
         return $this->composerProperty->alias;
     }
-
+    
     /**
      * 获取包名.
      *
@@ -165,17 +165,17 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function getPackageName()
     {
-        if (! $this->packageName) {
-            if (! $this->composerProperty) {
+        if ( !$this->packageName) {
+            if ( !$this->composerProperty) {
                 return;
             }
-
+            
             $this->packageName = $this->composerProperty->name;
         }
-
+        
         return $this->packageName;
     }
-
+    
     /**
      * 获取插件类型.
      *
@@ -185,7 +185,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->type;
     }
-
+    
     /**
      * 获取当前已安装版本.
      *
@@ -195,7 +195,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return Admin::extension()->versionManager()->getCurrentVersion($this);
     }
-
+    
     /**
      * 获取当前最新版本.
      *
@@ -205,7 +205,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return Admin::extension()->versionManager()->getFileVersions($this);
     }
-
+    
     /**
      * 获取当前本地最新版本.
      *
@@ -217,30 +217,31 @@ abstract class ServiceProvider extends LaravelServiceProvider
             array_keys(Admin::extension()->versionManager()->getFileVersions($this))
         );
     }
-
+    
     /**
      * 获取扩展包路径.
      *
      * @param  string  $path
+     *
      * @return string
      *
      * @throws \ReflectionException
      */
     public function path(?string $path = null)
     {
-        if (! $this->path) {
+        if ( !$this->path) {
             $this->path = realpath(dirname((new \ReflectionClass(static::class))->getFileName()).'/..');
-
-            if (! is_dir($this->path)) {
+            
+            if ( !is_dir($this->path)) {
                 throw new RuntimeException("The {$this->path} is not a directory.");
             }
         }
-
+        
         $path = ltrim($path, '/');
-
+        
         return $path ? $this->path.'/'.$path : $this->path;
     }
-
+    
     /**
      * 获取logo路径.
      *
@@ -252,7 +253,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->path('logo.png');
     }
-
+    
     /**
      * @return string
      */
@@ -260,18 +261,19 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         try {
             $logo = $this->getLogoPath();
-
+            
             if (is_file($logo) && $file = fopen($logo, 'rb', 0)) {
                 $content = fread($file, filesize($logo));
                 fclose($file);
                 $base64 = chunk_split(base64_encode($content));
-
+                
                 return 'data:image/png;base64,'.$base64;
             }
-        } catch (\ReflectionException $e) {
+        }
+        catch (\ReflectionException $e) {
         }
     }
-
+    
     /**
      * 判断扩展是否启用.
      *
@@ -281,7 +283,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return Admin::extension()->enabled($this->getName());
     }
-
+    
     /**
      * 判断扩展是否禁用.
      *
@@ -289,14 +291,15 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function disabled()
     {
-        return ! $this->enabled();
+        return !$this->enabled();
     }
-
+    
     /**
      * 获取或保存配置.
      *
      * @param  string  $key
      * @param  null  $default
+     *
      * @return mixed
      */
     public function config($key = null, $default = null)
@@ -304,20 +307,20 @@ abstract class ServiceProvider extends LaravelServiceProvider
         if ($this->config === null) {
             $this->initConfig();
         }
-
+        
         if (is_array($key)) {
             $this->saveConfig($key);
-
+            
             return;
         }
-
+        
         if ($key === null) {
             return $this->config;
         }
-
+        
         return Arr::get($this->config, $key, $default);
     }
-
+    
     /**
      * 保存配置.
      *
@@ -326,10 +329,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
     public function saveConfig(array $config)
     {
         $this->config = array_merge($this->config, $config);
-
+        
         Admin::setting()->save([$this->getConfigKey() => $this->serializeConfig($this->config)]);
     }
-
+    
     /**
      * 初始化配置.
      */
@@ -338,7 +341,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
         $this->config = Admin::setting()->get($this->getConfigKey());
         $this->config = $this->config ? $this->unserializeConfig($this->config) : [];
     }
-
+    
     /**
      * 更新扩展.
      *
@@ -351,7 +354,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         $this->refreshMenu();
     }
-
+    
     /**
      * 卸载扩展.
      */
@@ -359,7 +362,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         $this->flushMenu();
     }
-
+    
     /**
      * 发布静态资源.
      */
@@ -371,7 +374,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
             ], $this->getName());
         }
     }
-
+    
     /**
      * 获取资源发布路径.
      *
@@ -383,7 +386,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
             Admin::asset()->getRealPath('@extension/'.str_replace('.', '/', $this->getName()))
         );
     }
-
+    
     /**
      * 注册路由.
      *
@@ -398,7 +401,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
             ], $callback);
         });
     }
-
+    
     /**
      * 获取中间件.
      *
@@ -408,7 +411,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->middleware;
     }
-
+    
     /**
      * 注册中间件.
      */
@@ -416,37 +419,37 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         $adminMiddleware = (array) config('admin.route.middleware');
         $middleware = $this->middleware();
-
+        
         $before = $middleware['before'] ?? [];
         $middle = $middleware['middle'] ?? [];
         $after = $middleware['after'] ?? [];
-
+        
         $this->mixMiddleware($middle);
-
+        
         config([
             'admin.route.middleware' => array_merge((array) $before, $adminMiddleware, (array) $after),
         ]);
     }
-
+    
     protected function mixMiddleware(array $middle)
     {
         Admin::mixMiddlewareGroup($middle);
     }
-
+    
     /**
      * 配置需要跳过权限认证和登录认证的路由.
      */
     protected function addExceptRoutes()
     {
-        if (! empty($this->exceptRoutes['permission'])) {
+        if ( !empty($this->exceptRoutes['permission'])) {
             Admin::context()->merge('permission.except', (array) $this->exceptRoutes['permission']);
         }
-
-        if (! empty($this->exceptRoutes['auth'])) {
+        
+        if ( !empty($this->exceptRoutes['auth'])) {
             Admin::context()->merge('auth.except', (array) $this->exceptRoutes['auth']);
         }
     }
-
+    
     /**
      * 获取静态资源路径.
      *
@@ -456,7 +459,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->path('resources/assets');
     }
-
+    
     /**
      * 获取视图路径.
      *
@@ -466,7 +469,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->path('resources/views');
     }
-
+    
     /**
      * 获取语言包路径.
      *
@@ -476,7 +479,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return $this->path('resources/lang');
     }
-
+    
     /**
      * 获取路由地址.
      *
@@ -486,51 +489,54 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     final public function getRoutes()
     {
-        $path = $this->path('src/Http/routes.php');
-
+        $path = $this->path('routes/admin.php');
+        
         return is_file($path) ? $path : null;
     }
-
+    
     /**
      * @param  ComposerProperty  $composerProperty
+     *
      * @return $this
      */
     public function withComposerProperty(ComposerProperty $composerProperty)
     {
         $this->composerProperty = $composerProperty;
-
+        
         return $this;
     }
-
+    
     /**
      * 获取或保存配置.
      *
      * @param  string  $key
      * @param  string  $value
+     *
      * @return mixed
      */
     public static function setting($key = null, $value = null)
     {
         $extension = static::instance();
-
+        
         if ($extension && $extension instanceof ServiceProvider) {
             return $extension->config($key, $value);
         }
     }
-
+    
     /**
      * 翻译.
      *
      * @param  string  $key
      * @param  array  $replace
-     * @param  null  $locale
+     * @param  null   $locale
+     *
      * @return array|string|null
      */
     public static function trans($key, $replace = [], $locale = null)
     {
         return trans(static::instance()->getName().'::'.$key, $replace, $locale);
     }
-
+    
     /**
      * 获取自身实例.
      *
@@ -540,17 +546,17 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return app(static::class);
     }
-
+    
     /**
      * 注册别名.
      */
     protected function aliasAssets()
     {
         $asset = Admin::asset();
-
+        
         // 注册静态资源路径别名
         $asset->alias($this->getName().'.path', '@extension/'.$this->getPackageName());
-
+        
         if ($this->js || $this->css) {
             $asset->alias($this->getName(), [
                 'js'  => $this->formatAssetFiles($this->js),
@@ -558,9 +564,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
             ]);
         }
     }
-
+    
     /**
      * @param  string|array  $files
+     *
      * @return mixed
      */
     protected function formatAssetFiles($files)
@@ -568,14 +575,14 @@ abstract class ServiceProvider extends LaravelServiceProvider
         if (is_array($files)) {
             return array_map([$this, 'formatAssetFiles'], $files);
         }
-
+        
         if (URL::isValidUrl($files)) {
             return $files;
         }
-
+        
         return '@'.$this->getName().'.path/'.trim($files, '/');
     }
-
+    
     /**
      * 配置key.
      *
@@ -585,18 +592,20 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         return str_replace('.', ':', $this->getName());
     }
-
+    
     /**
      * @param $config
+     *
      * @return false|string
      */
     protected function serializeConfig($config)
     {
         return json_encode($config);
     }
-
+    
     /**
      * @param $config
+     *
      * @return array
      */
     protected function unserializeConfig($config)
