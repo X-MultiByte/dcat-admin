@@ -9,38 +9,38 @@ use Illuminate\Support\Str;
 
 class Card extends Widget
 {
-    protected $view = 'admin::widgets.card';
+    protected $view    = 'admin::widgets.card';
     protected $title;
     protected $content;
     protected $footer;
-    protected $tools = [];
+    protected $tools   = [];
     protected $divider = false;
     protected $padding;
-
+    
     public function __construct($title = '', $content = null)
     {
         if ($content === null) {
             $content = $title;
-            $title = '';
+            $title   = '';
         }
-
+        
         $this->title($title);
         $this->content($content);
-
+        
         $this->class('card');
         $this->id('card-'.Str::random(8));
     }
-
+    
     /**
      * @return $this
      */
     public function withHeaderBorder()
     {
         $this->divider = true;
-
+        
         return $this;
     }
-
+    
     /**
      * 设置卡片间距.
      *
@@ -49,17 +49,18 @@ class Card extends Widget
     public function padding(string $padding)
     {
         $this->padding = 'padding:'.$padding;
-
+        
         return $this;
     }
-
+    
     public function noPadding()
     {
         return $this->padding('0');
     }
-
+    
     /**
      * @param  string|\Closure|Renderable|LazyWidget  $content
+     *
      * @return $this
      */
     public function content($content)
@@ -67,45 +68,48 @@ class Card extends Widget
         if ($content instanceof LazyGrid) {
             $content->simple();
         }
-
+        
         $this->content = $this->formatRenderable($content);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string  $content
+     *
      * @return $this
      */
     public function footer($content)
     {
         $this->footer = $content;
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string  $title
+     *
      * @return $this
      */
     public function title($title)
     {
         $this->title = $title;
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string|Renderable|\Closure  $content
+     *
      * @return $this
      */
     public function tool($content)
     {
         $this->tools[] = $this->toString($content);
-
+        
         return $this;
     }
-
+    
     /**
      * {@inheritdoc}
      */

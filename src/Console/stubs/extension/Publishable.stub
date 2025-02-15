@@ -1,0 +1,126 @@
+<?php
+
+namespace {namespace}\Concerns;
+
+use {ServiceProviderWithNamespace};
+
+/**
+ * @method \Illuminate\Support\ServiceProvider publishes( array $paths, $groups = null )
+ */
+trait Publishable
+{
+    /**
+     * Migration filename prefix.
+     *
+     * @const string
+     */
+    public final const DATABASE_MIGRATION_PREFIX = '2024_10_10_000000_';
+
+    /**
+     * Package's publishable.
+     *
+     * @const string[]
+     */
+    public final const PUBLISHABLE = [
+        'config'     => '{packageName}-config',
+        'routes'     => '{packageName}-routes',
+        'migrations' => '{packageName}-migrations',
+        'seeders'    => '{packageName}-seeders',
+        'lang'       => '{packageName}-lang',
+        'views'      => '{packageName}-views',
+        'assets'     => '{packageName}-assets',
+    ];
+
+        /**
+     * Register config publishable.
+     *
+     * @return void
+     */
+    public function registerConfigPublishable()
+    {
+        $this->publishes([
+            {ServiceProviderName}::configPath('testing.php') => config_path('{packageName}.php'),
+        ], self::PUBLISHABLE['config']);
+    }
+
+    /**
+     * Register routes publishable.
+     *
+     * @return void
+     */
+    public function registerRoutesPublishable()
+    {
+        $this->publishes([
+            {ServiceProviderName}::routePath('admin.php')   => base_path('routes/{packageName}/admin.php'),
+            {ServiceProviderName}::routePath('bot.php')     => base_path('routes/{packageName}/bot.php'),
+            {ServiceProviderName}::routePath('webhook.php') => base_path('routes/{packageName}/webhook.php'),
+        ], self::PUBLISHABLE['routes']);
+    }
+
+    /**
+     * Register routes publishable.
+     *
+     * @return void
+     */
+    public function registerMigrationsPublishable()
+    {
+        // TODO: Register Migration Publishes.
+    }
+
+    /**
+     * Return the migration path with datetime.
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    public function getMigrationDestinationPath( $path )
+    {
+        $path = str()->start($path, static::DATABASE_MIGRATION_PREFIX);
+
+        return database_path('migrations' . DIRECTORY_SEPARATOR . $path);
+    }
+
+    /**
+     * Register seeders publishable.
+     *
+     * @return void
+     */
+    public function registerSeedersPublishable()
+    {
+        //TODO: Register Seeders Publishable.
+    }
+
+    /**
+     * Register lang publishable.
+     *
+     * @return void
+     */
+    public function registerLangPublishable()
+    {
+        $this->publishes([
+            {ServiceProviderName}::languagePath() => lang_path(),
+        ], self::PUBLISHABLE['lang']);
+    }
+
+    /**
+     * Register views publishable.
+     *
+     * @return void
+     */
+
+    public function registerViewsPublishable()
+    {
+        //TODO: Register Views Publishable.
+    }
+
+    /**
+     * Register assets publishable.
+     *
+     * @return void
+     */
+    public function registerAssetsPublishable()
+    {
+        //TODO: Register Assets Publishable.
+    }
+}

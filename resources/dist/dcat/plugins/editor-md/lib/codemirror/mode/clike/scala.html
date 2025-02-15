@@ -10,22 +10,22 @@
 <script src="../../addon/edit/matchbrackets.js"></script>
 <script src="clike.js"></script>
 <div id=nav>
-  <a href="http://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
+    <a href="http://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
 
-  <ul>
-    <li><a href="../../index.html">Home</a>
-    <li><a href="../../doc/manual.html">Manual</a>
-    <li><a href="https://github.com/codemirror/codemirror">Code</a>
-  </ul>
-  <ul>
-    <li><a href="../index.html">Language modes</a>
-    <li><a class=active href="#">Scala</a>
-  </ul>
+    <ul>
+        <li><a href="../../index.html">Home</a>
+        <li><a href="../../doc/manual.html">Manual</a>
+        <li><a href="https://github.com/codemirror/codemirror">Code</a>
+    </ul>
+    <ul>
+        <li><a href="../index.html">Language modes</a>
+        <li><a class=active href="#">Scala</a>
+    </ul>
 </div>
 
 <article>
-<h2>Scala mode</h2>
-<form>
+    <h2>Scala mode</h2>
+    <form>
 <textarea id="code" name="code">
 
   /*                     __                                               *\
@@ -210,7 +210,7 @@
       b.result
     }
 
-    /** This overload exists because: for the implementation of ++: we should reuse
+    /** This overload isAttributeExists because: for the implementation of ++: we should reuse
      *  that of ++ because many collections override it with more efficient versions.
      *  Since TraversableOnce has no '++' method, we have to implement that directly,
      *  but Traversable and down can use the overload.
@@ -339,7 +339,7 @@
      *  @return        `true` if the given predicate `p` holds for some of the
      *                 elements of this $coll, otherwise `false`.
      */
-    def exists(p: A => Boolean): Boolean = {
+    def isAttributeExists(p: A => Boolean): Boolean = {
       var result = false
       breakable {
         for (x <- this)
@@ -355,7 +355,7 @@
      *
      *  @param p    the predicate used to test elements.
      *  @return     an option value containing the first element in the $coll
-     *              that satisfies `p`, or `None` if none exists.
+     *              that satisfies `p`, or `None` if none isAttributeExists.
      */
     def find(p: A => Boolean): Option[A] = {
       var result: Option[A] = None
@@ -754,14 +754,14 @@
 
 
 </textarea>
-</form>
+    </form>
 
     <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        theme: "ambiance",
-        mode: "text/x-scala"
-      });
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            lineNumbers: true,
+            matchBrackets: true,
+            theme: "ambiance",
+            mode: "text/x-scala"
+        });
     </script>
-  </article>
+</article>

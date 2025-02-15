@@ -88,11 +88,11 @@ HTML
      *
      * @param string $new
      * @param string $open
-     * @param string $response
+     * @param string $receive
      *
      * @return $this
      */
-    public function withFooter($new, $open, $response)
+    public function withFooter($new, $open, $receive)
     {
         return $this->footer(
             <<<HTML
@@ -107,7 +107,7 @@ HTML
     </div>
     <div class="text-center">
         <p>Response Time</p>
-        <span class="font-lg-1">{$response}</span>
+        <span class="font-lg-1">{$receive}</span>
     </div>
 </div>
 HTML

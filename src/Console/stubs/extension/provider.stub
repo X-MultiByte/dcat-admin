@@ -4,29 +4,119 @@ namespace {namespace};
 
 use Dcat\Admin\Extend\ServiceProvider;
 use Dcat\Admin\Admin;
+{importTraits}
 
 class {className}ServiceProvider extends ServiceProvider
 {
-	{property}
-	protected $css = [
-		'css/index.css',
-	];
+    public final const ROOT_DIR = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
 
+    public final const HELPER_PATH = __DIR__ . 'helpers.php';
+
+    {traits}
+	{property}
+
+	/**
+     * @var array[]
+     */
+    protected $menu = [
+        [
+            'title' => '{className}',
+            'uri'   => '#',
+            'icon'  => 'fa fa-puzzle-piece',
+        ],
+    ];
+
+    /**
+     * Register application services.
+     *
+     * @return void
+     */
 	public function register()
 	{
-		//
+	    $this->registerServices();
 	}
 
-	public function init()
+    /**
+     * Use this method as the boot method.
+     *
+     * @return void
+     */
+	public function init(): void
 	{
 		parent::init();
 
-		//
+		$this->register{className}Routes();
+		$this->registerPublishes();
+		$this->registerCommands();
+		$this->registerHelpers();
 		{registerTheme}
 	}
 
+    /**
+     * Return the extension setting form.
+     *
+     * @return {namespace}\Setting
+     */
 	public function settingForm()
 	{
 		return new Setting($this);
 	}
+
+	protected function registerServices()
+	{
+	    // ServiceProvider
+	    $this->app->bind('{extensionName}.provider', static::class);
+	}
+
+    /**
+     * Ensure helpers functions is loaded.
+     *
+     * @return void
+     */
+    protected function registerHelpers()
+    {
+        if ( ! defined('{CLASSNAME}_HELPER_LOADED') && $this->enabled() )
+        {
+            File::requireOnce(static::HELPER_PATH);
+        }
+    }
+
+	/**
+	 * Register the {className} Routes.
+	 *
+	 * @return void
+	 */
+	public function register{className}Routes(): void
+	{
+	    //
+	}
+
+	/**
+	 * Register the publishes.
+	 *
+	 * @return void
+	 */
+	public function registerPublishes(): void
+	{
+        if($this->app->runningInConsole())
+        {
+            $this->registerConfigPublishable();
+            $this->registerRoutesPublishable();
+            $this->registerLangPublishable();
+            $this->registerMigrationsPublishable();
+            $this->registerSeedersPublishable();
+            $this->registerAssetsPublishable();
+            $this->registerViewsPublishable();
+        }
+	}
+
+	/**
+     * Register extension commands.
+     *
+     * @return void
+     */
+    protected function registerCommands(): void
+    {
+        $this->commands($this->commands);
+    }
 }

@@ -21,6 +21,7 @@ use Illuminate\Support\Arr;
  * @property array $scripts
  * @property array $extra
  * @property string $version
+ * @property mixed $alias
  */
 class ComposerProperty implements Arrayable
 {
@@ -28,63 +29,67 @@ class ComposerProperty implements Arrayable
      * @var array
      */
     protected $attributes = [];
-
-    public function __construct(array $attributes = [])
+    
+    public function __construct( array $attributes = [] )
     {
         $this->attributes = $attributes;
     }
-
+    
     /**
      * @param $key
      * @param  null  $default
+     *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get( $key, $default = null )
     {
         return Arr::get($this->attributes, $key, $default);
     }
-
+    
     /**
      * @param $key
      * @param $val
+     *
      * @return $this
      */
-    public function set($key, $val)
+    public function set( $key, $val )
     {
         $new = $this->attributes;
-
+        
         Arr::set($new, $key, $val);
-
+        
         return new static($new);
     }
-
+    
     /**
      * @param $key
+     *
      * @return $this
      */
-    public function delete($key)
+    public function delete( $key )
     {
         $new = $this->attributes;
-
+        
         Arr::forget($new, $key);
-
+        
         return new static($new);
     }
-
+    
     /**
      * @param $name
+     *
      * @return mixed
      */
-    public function __get($name)
+    public function __get( $name )
     {
         return $this->get(str_replace('_', '-', $name));
     }
-
+    
     public function toArray()
     {
         return $this->attributes;
     }
-
+    
     public function toJson()
     {
         return json_encode($this->toArray());

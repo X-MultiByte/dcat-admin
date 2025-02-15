@@ -17,31 +17,32 @@ use Illuminate\Support\Str;
 class Chart extends Widget
 {
     use InteractsWithApi;
-
+    
     public static $js = [
         '@apex-charts',
     ];
-
+    
     protected $containerSelector;
-
+    
     protected $built = false;
-
+    
     public function __construct($selector = null, $options = [])
     {
-        if ($selector && ! is_string($selector)) {
-            $options = $selector;
+        if ($selector && !is_string($selector)) {
+            $options  = $selector;
             $selector = null;
         }
-
+        
         $this->selector($selector);
-
+        
         $this->options($options);
     }
-
+    
     /**
      * 设置或获取图表容器选择器.
      *
      * @param  string|null  $selector
+     *
      * @return $this|string|null
      */
     public function selector(?string $selector = null)
@@ -49,18 +50,19 @@ class Chart extends Widget
         if ($selector === null) {
             return $this->containerSelector;
         }
-
+        
         $this->containerSelector = $selector;
-
-        if ($selector && ! $this->built) {
+        
+        if ($selector && !$this->built) {
             $this->autoRender();
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string|array  $title
+     *
      * @return $this
      */
     public function title($title)
@@ -70,113 +72,123 @@ class Chart extends Widget
         } else {
             $options = Helper::array($title);
         }
-
+        
         $this->options['title'] = $options;
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $series
+     *
      * @return $this
      */
     public function series($series)
     {
         $this->options['series'] = Helper::array($series);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function labels($value)
     {
         $this->options['labels'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string|array  $colors
+     *
      * @return $this
      */
     public function colors($colors)
     {
         $this->options['colors'] = Helper::array($colors);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function stroke($value)
     {
         $this->options['stroke'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function xaxis($value)
     {
         $this->options['xaxis'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function tooltip($value)
     {
         $this->options['tooltip'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function yaxis($value)
     {
         $this->options['yaxis'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function fill($value)
     {
         $this->options['fill'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array  $value
+     *
      * @return $this
      */
     public function chart($value)
     {
         $this->options['chart'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  array|bool  $value
+     *
      * @return $this
      */
     public function dataLabels($value)
@@ -184,19 +196,19 @@ class Chart extends Widget
         if (is_bool($value)) {
             $value = ['enabled' => $value];
         }
-
+        
         $this->options['dataLabels'] = Helper::array($value);
-
+        
         return $this;
     }
-
+    
     /**
      * @return string
      */
     protected function buildDefaultScript()
     {
         $options = JavaScript::format($this->options);
-
+        
         return <<<JS
 (function () {
     var options = {$options};
@@ -209,16 +221,16 @@ class Chart extends Widget
 })();
 JS;
     }
-
+    
     /**
      * @return string
      */
     public function addScript()
     {
-        if (! $this->allowBuildRequest()) {
+        if ( !$this->allowBuildRequest()) {
             return $this->script = $this->buildDefaultScript();
         }
-
+        
         $this->fetched(
             <<<JS
 if (! response.status) {
@@ -240,10 +252,10 @@ if (chartBox.length) {
 }
 JS
         );
-
+        
         return $this->script = $this->buildRequestScript();
     }
-
+    
     /**
      * @return string
      */
@@ -253,37 +265,37 @@ JS
             return;
         }
         $this->built = true;
-
+        
         return parent::render();
     }
-
+    
     public function html()
     {
         $hasSelector = $this->containerSelector ? true : false;
-
-        if (! $hasSelector) {
+        
+        if ( !$hasSelector) {
             // 没有指定ID，需要自动生成
             $id = $this->generateId();
-
+            
             $this->selector('#'.$id);
         }
-
+        
         $this->addScript();
-
+        
         if ($hasSelector) {
             return;
         }
-
+        
         // 没有指定容器选择器，则需自动生成
         $this->setHtmlAttribute([
             'id' => $id,
         ]);
-
+        
         return <<<HTML
 <div {$this->formatHtmlAttributes()}></div>
 HTML;
     }
-
+    
     /**
      * 返回API请求结果.
      *
@@ -297,7 +309,7 @@ HTML;
             'options'  => $this->formatScriptOptions(),
         ];
     }
-
+    
     /**
      * 配置选项转化为JS可执行代码.
      *
@@ -306,10 +318,10 @@ HTML;
     protected function formatScriptOptions()
     {
         $code = JavaScript::format($this->options);
-
+        
         return "response.options = {$code}";
     }
-
+    
     /**
      * 生成唯一ID.
      *

@@ -1,31 +1,46 @@
+<style>
+    .block-margin-top-10 {
+        margin-bottom: 10px;
+    }
+</style>
 <thead>
 <tr class="{{ $elementClass }} quick-create" style="cursor: pointer">
     <td colspan="{{ $columnCount }}" style="background: {{ Dcat\Admin\Admin::color()->darken('#ededed', 1) }}">
         <span class="create cursor-pointer" style="display: block;">
-             <i class="feather icon-plus"></i>&nbsp;{{ __('admin.quick_create') }}
+             <i class="feather icon-plus-circle"></i> {{ Str::title(trans('admin.quick_create')) }}
         </span>
-
-        <form class="form-inline create-form" style="display: none;" method="post">
+        <div class="block-margin-top-10"></div>
+        
+        <form class="form-inline create-form" method="post" style="display:none">
             @foreach($fields as $field)
                 &nbsp;{!! $field->render() !!}
             @endforeach
-                &nbsp;
             &nbsp;
-            <button type="submit" class="btn btn-primary btn-sm">{{ __('admin.submit') }}</button>&nbsp;
             &nbsp;
-            <a href="javascript:void(0);" class="cancel">{{ __('admin.cancel') }}</a>
+            <button type="submit" class="btn btn-success btn-sm btn-outline" style="width:100px;">{{ __('admin.submit') }}</button>&nbsp;
+            &nbsp;
+            <a href="javascript:void(0);" class="cancel btn btn-sm btn-default btn-outline" style="width:100px;">{{ __('admin.cancel') }}</a>
         </form>
     </td>
 </tr>
 </thead>
 
 <script>
+
     var ctr = $('.{!! $elementClass !!}'),
         btn = $('.quick-create-button-{!! $uniqueName !!}');
+    
+    @if($show)
+    ctr.ready(function () {
+        ctr.find('.create-form').show();
+        ctr.find('.create').hide();
+    })
+    @endif
 
     btn.on('click', function () {
         ctr.toggle().click();
-    });
+    })
+    ;
 
     ctr.on('click', function () {
         ctr.find('.create-form').show();
@@ -58,13 +73,13 @@
             url: '{!! $url !!}',
             type: '{!! $method !!}',
             data: $(this).serialize(),
-            success: function(data) {
+            success: function (data) {
                 ctr.attr('submitting', '');
                 btn.buttonLoading(false);
 
                 Dcat.handleJsonResponse(data);
             },
-            error:function(xhq){
+            error: function (xhq) {
                 btn.buttonLoading(false);
                 ctr.attr('submitting', '');
                 var json = xhq.responseJSON;

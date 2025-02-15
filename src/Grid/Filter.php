@@ -74,15 +74,15 @@ class Filter implements Renderable
     use HasBuilderEvents;
     use Macroable;
     use HasVariables;
-
+    
     const MODE_RIGHT_SIDE = 'right-side';
-    const MODE_PANEL = 'panel';
-
+    const MODE_PANEL      = 'panel';
+    
     /**
      * @var array
      */
     protected static $supports = [];
-
+    
     /**
      * @var array
      */
@@ -111,98 +111,98 @@ class Filter implements Renderable
         'newline'      => Newline::class,
         'findInSet'    => FindInSet::class,
     ];
-
+    
     /**
      * @var Model
      */
     protected $model;
-
+    
     /**
      * @var AbstractFilter[]
      */
     protected $filters = [];
-
+    
     /**
      * Action of search form.
      *
      * @var string
      */
     protected $action;
-
+    
     /**
      * @var string
      */
     protected $view;
-
+    
     /**
      * @var string
      */
     protected $filterID;
-
+    
     /**
      * @var string
      */
     protected $name = '';
-
+    
     /**
      * @var bool
      */
     public $expand;
-
+    
     /**
      * @var Collection
      */
     protected $scopes;
-
+    
     /**
      * @var Layout
      */
     protected $layout;
-
+    
     /**
      * Primary key of giving model.
      *
      * @var mixed
      */
     protected $primaryKey;
-
+    
     /**
      * @var string
      */
     protected $style = 'padding:0';
-
+    
     /**
      * @var bool
      */
     protected $disableResetButton = false;
-
+    
     /**
      * @var string
      */
     protected $border = 'border-top:1px solid #f4f4f4;';
-
+    
     /**
      * @var string
      */
     protected $containerClass = '';
-
+    
     /**
      * @var bool
      */
     protected $disableCollapse = false;
-
+    
     /**
      * @var array
      */
     protected $inputs;
-
+    
     /**
      * @var string
      */
     protected $mode = self::MODE_RIGHT_SIDE;
-
+    
     protected $conditions;
-
+    
     /**
      * Create a new filter instance.
      *
@@ -211,18 +211,18 @@ class Filter implements Renderable
     public function __construct(Model $model)
     {
         $this->model = $model;
-
+        
         $this->primaryKey = $model->getKeyName();
-
+        
         $this->filterID = $this->formatFilterId();
-
+        
         $this->initLayout();
-
+        
         $this->scopes = new Collection();
-
+        
         $this->callResolving();
     }
-
+    
     /**
      * Initialize filter layout.
      */
@@ -230,7 +230,7 @@ class Filter implements Renderable
     {
         $this->layout = new Filter\Layout\Layout($this);
     }
-
+    
     /**
      * @return string
      */
@@ -238,70 +238,74 @@ class Filter implements Renderable
     {
         return 'filter-box'.Str::random(8);
     }
-
+    
     /**
      * Set action of search form.
      *
      * @param  string  $action
+     *
      * @return $this
      */
     public function setAction($action)
     {
         $this->action = $action;
-
+        
         return $this;
     }
-
+    
     /**
      * @return $this
      */
     public function withoutInputBorder()
     {
         $this->containerClass = 'input-no-border';
-
+        
         return $this;
     }
-
+    
     /**
      * @param  bool  $disabled
+     *
      * @return $this
      */
     public function disableCollapse(bool $disabled = true)
     {
         $this->disableCollapse = $disabled;
-
+        
         return $this;
     }
-
+    
     /**
      * @param  bool  $disabled
+     *
      * @return $this
      */
     public function disableResetButton(bool $disabled = true)
     {
         $this->disableResetButton = $disabled;
-
+        
         return $this;
     }
-
+    
     /**
      * Get input data.
      *
      * @param  string  $key
      * @param  null  $value
+     *
      * @return array|mixed
      */
     public function input($key = null, $default = null)
     {
         $inputs = $this->inputs();
-
+        
         if ($key === null) {
             return $inputs;
         }
-
+        
         return Arr::get($inputs, $key, $default);
     }
-
+    
     /**
      * Get grid model.
      *
@@ -311,7 +315,7 @@ class Filter implements Renderable
     {
         return $this->model;
     }
-
+    
     /**
      * Get grid.
      *
@@ -321,20 +325,21 @@ class Filter implements Renderable
     {
         return $this->model->grid();
     }
-
+    
     /**
      * Set ID of search form.
      *
      * @param  string  $filterID
+     *
      * @return $this
      */
     public function setFilterID($filterID)
     {
         $this->filterID = $filterID;
-
+        
         return $this;
     }
-
+    
     /**
      * @return $this
      */
@@ -342,7 +347,7 @@ class Filter implements Renderable
     {
         return $this->mode(static::MODE_PANEL);
     }
-
+    
     /**
      * @return $this
      */
@@ -350,9 +355,10 @@ class Filter implements Renderable
     {
         return $this->mode(static::MODE_RIGHT_SIDE);
     }
-
+    
     /**
      * @param  string|null  $mode
+     *
      * @return $this|string
      */
     public function mode(string $mode = null)
@@ -360,12 +366,12 @@ class Filter implements Renderable
         if ($mode === null) {
             return $this->mode;
         }
-
+        
         $this->mode = $mode;
-
+        
         return $this;
     }
-
+    
     /**
      * Get filter ID.
      *
@@ -375,7 +381,7 @@ class Filter implements Renderable
     {
         return $this->filterID;
     }
-
+    
     /**
      * @return $this
      */
@@ -383,17 +389,17 @@ class Filter implements Renderable
     {
         return $this->withBorder('');
     }
-
+    
     /**
      * @return $this
      */
     public function withBorder($border = null)
     {
         $this->border = is_null($border) ? 'border-top:1px solid #f4f4f4;' : $border;
-
+        
         return $this;
     }
-
+    
     /**
      * Remove filter by column.
      *
@@ -403,33 +409,33 @@ class Filter implements Renderable
     {
         $this->filters = array_filter($this->filters, function (AbstractFilter $filter) use (&$column) {
             if (is_array($column)) {
-                return ! in_array($filter->column(), $column);
+                return !in_array($filter->column(), $column);
             }
-
+            
             return $filter->column() != $column;
         });
     }
-
+    
     /**
      * @return array
      */
     public function inputs()
     {
-        if (! is_null($this->inputs)) {
+        if ( !is_null($this->inputs)) {
             return $this->inputs;
         }
-
+        
         $this->inputs = Arr::dot(request()->all());
-
+        
         $this->inputs = array_filter($this->inputs, function ($input) {
-            return $input !== '' && ! is_null($input);
+            return $input !== '' && !is_null($input);
         });
-
+        
         $this->sanitizeInputs($this->inputs);
-
+        
         return $this->inputs;
     }
-
+    
     /**
      * Get all conditions of the filters.
      *
@@ -438,87 +444,90 @@ class Filter implements Renderable
     public function getConditions()
     {
         $inputs = $this->inputs();
-
+        
         if (empty($inputs)) {
             return [];
         }
-
+        
         if ($this->conditions !== null) {
             return $this->conditions;
         }
-
+        
         $params = [];
-
+        
         foreach ($inputs as $key => $value) {
             Arr::set($params, $key, $value);
         }
-
+        
         $conditions = [];
-
+        
         foreach ($this->filters() as $filter) {
             $conditions[] = $filter->condition($params);
         }
-
+        
         return tap(array_filter($conditions), function ($conditions) {
-            if (! empty($conditions)) {
+            if ( !empty($conditions)) {
                 if ($this->expand === null || $this->mode !== static::MODE_RIGHT_SIDE) {
                     $this->expand();
                 }
-
+                
                 $this->grid()->fireOnce(new ApplyFilter([$conditions]));
-
+                
                 $this->grid()->model()->disableBindTreeQuery();
             }
-
+            
             $this->conditions = $conditions;
         });
     }
-
+    
     /**
      * @param  array  $inputs
+     *
      * @return void
      */
     protected function sanitizeInputs(&$inputs)
     {
-        if (! $prefix = $this->grid()->getNamePrefix()) {
+        if ( !$prefix = $this->grid()->getNamePrefix()) {
             return;
         }
-
+        
         $inputs = collect($inputs)->filter(function ($input, $key) use ($prefix) {
             return Str::startsWith($key, $prefix);
         })->mapWithKeys(function ($val, $key) use ($prefix) {
             $key = str_replace($prefix, '', $key);
-
+            
             return [$key => $val];
         })->toArray();
     }
-
+    
     /**
      * Add a filter to grid.
      *
      * @param  AbstractFilter  $filter
+     *
      * @return AbstractFilter
      */
     protected function addFilter(AbstractFilter $filter)
     {
         $this->layout->addFilter($filter);
-
+        
         $filter->setParent($this);
-
+        
         return $this->filters[] = $filter;
     }
-
+    
     /**
      * Use a custom filter.
      *
      * @param  AbstractFilter  $filter
+     *
      * @return AbstractFilter
      */
     public function use(AbstractFilter $filter)
     {
         return $this->addFilter($filter);
     }
-
+    
     /**
      * Get all filters.
      *
@@ -528,7 +537,7 @@ class Filter implements Renderable
     {
         return $this->filters;
     }
-
+    
     /**
      * 统计查询条件的数量.
      *
@@ -539,21 +548,22 @@ class Filter implements Renderable
         return $this->mode() === Filter::MODE_RIGHT_SIDE
             ? count($this->getConditions()) : 0;
     }
-
+    
     /**
      * @param  string  $key
      * @param  string  $label
+     *
      * @return Scope
      */
     public function scope($key, $label = '')
     {
         $scope = new Scope($this, $key, $label);
-
+        
         $this->scopes->push($scope);
-
+        
         return $scope;
     }
-
+    
     /**
      * @return string
      */
@@ -561,7 +571,7 @@ class Filter implements Renderable
     {
         return $this->grid()->makeName('_scope_');
     }
-
+    
     /**
      * Get all filter scopes.
      *
@@ -571,7 +581,7 @@ class Filter implements Renderable
     {
         return $this->scopes;
     }
-
+    
     /**
      * Get current scope.
      *
@@ -580,12 +590,12 @@ class Filter implements Renderable
     public function getCurrentScope()
     {
         $key = $this->getCurrentScopeName();
-
+        
         return $this->scopes->first(function ($scope) use ($key) {
             return $scope->key == $key;
         });
     }
-
+    
     /**
      * Get the name of current scope.
      *
@@ -595,7 +605,7 @@ class Filter implements Renderable
     {
         return request($this->getScopeQueryName());
     }
-
+    
     /**
      * Get scope conditions.
      *
@@ -606,23 +616,24 @@ class Filter implements Renderable
         if ($scope = $this->getCurrentScope()) {
             return $scope->condition();
         }
-
+        
         return [];
     }
-
+    
     /**
      * Expand filter container.
      *
      * @param  bool  $value
+     *
      * @return $this
      */
     public function expand(bool $value = true)
     {
         $this->expand = $value;
-
+        
         return $this;
     }
-
+    
     /**
      * Execute the filter with conditions.
      *
@@ -634,41 +645,43 @@ class Filter implements Renderable
             $this->getConditions(),
             $this->getScopeConditions()
         );
-
+        
         $this->model->addConditions($conditions);
-
+        
         $this->grid()->fireOnce(new Fetching());
-
+        
         $data = $this->model->buildData();
-
+        
         $this->grid()->fireOnce(new Fetched([&$data]));
-
+        
         return $data;
     }
-
+    
     /**
      * @param  string  $top
      * @param  string  $right
      * @param  string  $bottom
      * @param  string  $left
+     *
      * @return Filter
      */
     public function padding($top = '15px', $right = '15px', $bottom = '5px', $left = '')
     {
         return $this->style("padding:$top $right $bottom $left");
     }
-
+    
     /**
      * @param  string  $style
+     *
      * @return $this
      */
     public function style(?string $style)
     {
         $this->style = $style;
-
+        
         return $this;
     }
-
+    
     /**
      * @return $this
      */
@@ -676,24 +689,24 @@ class Filter implements Renderable
     {
         return $this->style('padding:0;left:-4px;');
     }
-
+    
     /**
      * @return $this
      */
     public function hiddenResetButtonText()
     {
         Admin::style(".{$this->containerClass} a.reset .d-none d-sm-inline{display:none}");
-
+        
         return $this;
     }
-
+    
     public function view(string $view)
     {
         $this->view = $view;
-
+        
         return $this;
     }
-
+    
     /**
      * Get the string contents of the filter view.
      *
@@ -702,20 +715,20 @@ class Filter implements Renderable
     public function render()
     {
         $this->grid()->callBuilder();
-
+        
         if (empty($this->filters)) {
             return '';
         }
-
+        
         $this->callComposing();
-
-        if (! $this->view) {
+        
+        if ( !$this->view) {
             $this->view = $this->mode === static::MODE_RIGHT_SIDE ? 'admin::filter.right-side-container' : 'admin::filter.container';
         }
-
+        
         return view($this->view)->with($this->variables())->render();
     }
-
+    
     protected function defaultVariables()
     {
         return [
@@ -729,7 +742,7 @@ class Filter implements Renderable
             'disableResetButton' => $this->disableResetButton,
         ];
     }
-
+    
     /**
      * Get url without filter queryString.
      *
@@ -738,25 +751,25 @@ class Filter implements Renderable
     public function urlWithoutFilters()
     {
         $filters = collect($this->filters);
-
+        
         /** @var Collection $columns */
         $columns = $filters->map->getElementName()->flatten();
-
+        
         $columns->push(
             $this->grid()->model()->getPageName()
         );
-
+        
         $groupNames = $filters->filter(function ($filter) {
             return $filter instanceof Group;
         })->map(function (AbstractFilter $filter) {
             return "{$filter->getId()}_group";
         });
-
+        
         return Helper::fullUrlWithoutQuery(
             $columns->merge($groupNames)
         );
     }
-
+    
     /**
      * Get url without scope queryString.
      *
@@ -766,32 +779,33 @@ class Filter implements Renderable
     {
         return Helper::fullUrlWithoutQuery($this->getScopeQueryName());
     }
-
+    
     /**
      * Generate a filter object and add to grid.
      *
      * @param  string  $method
      * @param  array  $arguments
+     *
      * @return AbstractFilter|$this
      */
     public function __call($method, $arguments)
     {
-        if (! empty(static::$supports[$method])) {
+        if ( !empty(static::$supports[$method])) {
             $class = static::$supports[$method];
-            if (! is_subclass_of($class, AbstractFilter::class)) {
+            if ( !is_subclass_of($class, AbstractFilter::class)) {
                 throw new RuntimeException("The class [{$class}] must be a type of ".AbstractFilter::class.'.');
             }
-
+            
             return $this->addFilter(new $class(...$arguments));
         }
-
+        
         if (isset(static::$defaultFilters[$method])) {
             return $this->addFilter(new static::$defaultFilters[$method](...$arguments));
         }
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string  $name
      * @param  string  $filterClass
@@ -800,7 +814,7 @@ class Filter implements Renderable
     {
         static::$supports[$name] = $filterClass;
     }
-
+    
     /**
      * @return array
      */

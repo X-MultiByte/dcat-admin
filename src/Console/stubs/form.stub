@@ -17,10 +17,10 @@ class DummyClass extends Form
     {
         // dump($input);
 
-        // return $this->response()->error('Your error message.');
+        // return $this->receive()->error('Your error message.');
 
         return $this
-				->response()
+				->receive()
 				->success('Processed successfully.')
 				->refresh();
     }

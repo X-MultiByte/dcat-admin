@@ -5,11 +5,10 @@ namespace Dcat\Admin\Support;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 
-final class Configuration
+class Configurator
 {
-    const STUB_PATH = __DIR__.'/stubs/config.stub';
-    
     /**
      * @var \Illuminate\Filesystem\Filesystem
      */
@@ -23,25 +22,29 @@ final class Configuration
     /**
      * @var string
      */
-    protected string $name;
+    protected string $file;
     
     /**
      * @var string
      */
     protected string $path;
+    /**
+     * @var mixed|true
+     */
+    protected bool $cache = false;
     
     /**
-     * @param  string  $name
+     * @param  string  $file
      * @param  \Illuminate\Filesystem\Filesystem  $filesystem
      */
-    public function __construct(string $name, Filesystem $filesystem)
+    public function __construct(string $file, Filesystem $filesystem)
     {
-        $this->name       = $name;
+        $this->file       = $file;
         $this->filesystem = $filesystem;
-        $this->path       = config_path(sprintf("%s.php", $this->name));
+        $this->path       = config_path(sprintf("%s.php", $this->file));
         
         if ($this->exists()) {
-            $this->configs = config($this->name);
+            $this->configs = config($this->file);
         }
     }
     
@@ -155,7 +158,7 @@ final class Configuration
     }
     
     /**
-     * Save the configuration to a file.
+     * Save the configuration as a file.
      *
      * @return void
      */
@@ -163,14 +166,14 @@ final class Configuration
     {
         $exported = var_export($this->configs, true);
         
-        $this->filesystem
-            ->put(
-                $this->path,
-                '<?php'.
-                PHP_EOL.
-                PHP_EOL.
-                'return '.$this->format($exported).';'
-            );
+        $this->filesystem->put(
+            $this->path,
+            '<?php'.
+            PHP_EOL.
+            PHP_EOL.
+            'return '.$this->format($exported).';'.
+            PHP_EOL
+        );
     }
     
     /**

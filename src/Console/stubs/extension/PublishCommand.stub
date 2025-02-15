@@ -1,0 +1,177 @@
+<?php
+
+namespace {namespace};
+
+use Illuminate\Support\Arr;
+use Illuminate\Console\Command;
+use {ServiceProviderWithNamespace};
+
+class PublishCommand extends Command
+{
+    /**
+     *  The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Publish the {className} resources. --help for more information';
+
+    /**
+     * Publish Command Constructor
+     */
+    public function __construct()
+    {
+        $this->signature = $this->getSignature();
+
+        parent::__construct();
+    }
+
+    protected function getSignature()
+    {
+        $publishable = array_keys($this->getPublishable());
+
+        $signature = '{packageName}:publish {--f|force : Overwrite any existing files}';
+
+        if ( in_array('lang', $publishable, true) )
+        {
+            $signature .= ' {--lang : Publish Language files}';
+        }
+
+        if ( in_array('views', $publishable, true) )
+        {
+            $signature .= ' {--view : Publish Views files}';
+        }
+
+        if ( in_array('migrations', $publishable, true) )
+        {
+            $signature .= ' {--migrations : Publish Migrations files}';
+        }
+
+        if ( in_array('assets', $publishable, true) )
+        {
+            $signature .= ' {--assets : Publish Assets files}';
+        }
+
+        if ( in_array('config', $publishable, true) )
+        {
+            $signature .= ' {--config : Publish Configuration files}';
+        }
+
+        if ( in_array('routes', $publishable, true) )
+        {
+            $signature .= ' {--routes : Publish Routes files}';
+        }
+
+        return $signature;
+    }
+
+    /**
+     * Return the publishable array.
+     *
+     * @return array
+     */
+    protected function getPublishable(): array
+    {
+        return Arr::wrap({ServiceProviderName}::PUBLISHABLE);
+    }
+
+    public function handle(): void
+    {
+        $params = [
+            '--provider' => {ServiceProviderName}::class,
+            '--tag'      => $this->getTags(),
+        ];
+
+
+        if ( $this->isForce() )
+        {
+            $params['--force'] = true;
+        }
+
+        $this->call('vendor:publish', $params);
+    }
+
+    /**
+     * Get all or selected tag options.
+     *
+     * @return array|void
+     */
+    protected function getTags()
+    {
+        $tags        = [];
+        $publishable = $this->getPublishable();
+        if ( $this->hasTagOptions() )
+        {
+            foreach ( $publishable as $option => $tag )
+            {
+                if ( $this->hasOption($option) && $this->option($option) === true )
+                {
+                    $tags[] = $tag;
+                }
+            }
+        }
+
+        if ( empty($tags) )
+        {
+            if ( $this->confirmationPublishAll(true) )
+            {
+                $tags = array_values($publishable);
+            }
+            else
+            {
+                $this->error('Terminated: Canceled.');
+
+                return;
+            }
+        }
+
+        return $tags;
+
+    }
+
+    /**
+     * Determine the tag options is present.
+     *
+     * @return bool
+     */
+    protected function hasTagOptions(): bool
+    {
+        $options = collect($this->options())
+            ->only($this->getPublishableKeys())
+            ->filter(function ( $value )
+            {
+                return $value;
+            })->all();
+
+        return count($options) > 0;
+    }
+
+    protected function getPublishableKeys()
+    {
+        return array_keys($this->getPublishable());
+    }
+
+    /**
+     * Confirmation of publishing all.
+     *
+     * @param  bool  $default
+     */
+    protected function confirmationPublishAll( bool $default = false )
+    {
+        if ( $this->confirm('No options are selected, do you want to publish all resources?', $default) )
+        {
+            return $default;
+        }
+        $this->error('Terminated: Canceled.');
+        exit;
+    }
+
+    /**
+     * Determine force is presented and true.
+     *
+     * @return bool
+     */
+    protected function isForce(): bool
+    {
+        return $this->hasOption('force') && $this->option('force') === true;
+    }
+}

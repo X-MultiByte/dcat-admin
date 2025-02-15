@@ -50,7 +50,7 @@ class AdminServiceProvider extends ServiceProvider
         Console\ExtensionUpdateCommand::class,
         Console\UpdateCommand::class,
     ];
-
+    
     /**
      * 开发环境命令.
      *
@@ -59,7 +59,7 @@ class AdminServiceProvider extends ServiceProvider
     protected $devCommands = [
         Console\Development\LinkCommand::class,
     ];
-
+    
     /**
      * @var array
      */
@@ -72,7 +72,7 @@ class AdminServiceProvider extends ServiceProvider
         'admin.upload'     => Http\Middleware\WebUploader::class,
         'admin.app'        => Http\Middleware\Application::class,
     ];
-
+    
     /**
      * @var array
      */
@@ -86,7 +86,7 @@ class AdminServiceProvider extends ServiceProvider
             'admin.upload',
         ],
     ];
-
+    
     public function register()
     {
         $this->aliasAdmin();
@@ -94,14 +94,14 @@ class AdminServiceProvider extends ServiceProvider
         $this->registerRouteMiddleware();
         $this->registerServices();
         $this->registerExtensions();
-
+        
         $this->commands($this->commands);
-
+        
         if (config('app.debug')) {
             $this->commands($this->devCommands);
         }
     }
-
+    
     public function boot()
     {
         $this->registerDefaultSections();
@@ -113,19 +113,19 @@ class AdminServiceProvider extends ServiceProvider
         $this->bootExtensions();
         $this->registerBladeDirective();
     }
-
+    
     protected function aliasAdmin()
     {
         if (! class_exists(\Admin::class)) {
             class_alias(Admin::class, \Admin::class);
         }
     }
-
+    
     protected function registerViews()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'admin');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'admin');
     }
-
+    
     /**
      * 是否强制使用https.
      *
@@ -138,7 +138,7 @@ class AdminServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
         }
     }
-
+    
     /**
      * 路由注册.
      */
@@ -146,7 +146,7 @@ class AdminServiceProvider extends ServiceProvider
     {
         Admin::app()->boot();
     }
-
+    
     /**
      * 禁止laravel 5.6或更高版本中启用双编码的默认特性.
      *
@@ -159,7 +159,7 @@ class AdminServiceProvider extends ServiceProvider
             Blade::withoutDoubleEncoding();
         }
     }
-
+    
     /**
      * 资源发布注册.
      *
@@ -168,13 +168,13 @@ class AdminServiceProvider extends ServiceProvider
     protected function registerPublishing()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([__DIR__.'/../config' => config_path()], 'dcat-admin-config');
-            $this->publishes([__DIR__.'/../resources/lang' => $this->app->langPath()], 'dcat-admin-lang');
-            $this->publishes([__DIR__.'/../database/migrations' => database_path('migrations')], 'dcat-admin-migrations');
-            $this->publishes([__DIR__.'/../resources/dist' => public_path(Admin::asset()->getRealPath('@admin'))], 'dcat-admin-assets');
+            $this->publishes([ __DIR__ . '/../config' => config_path() ], 'dcat-admin-config');
+            $this->publishes([ __DIR__ . '/../resources/lang' => $this->app->langPath() ], 'dcat-admin-lang');
+            $this->publishes([ __DIR__ . '/../database/migrations' => database_path('migrations') ], 'dcat-admin-migrations');
+            $this->publishes([ __DIR__ . '/../resources/dist' => public_path(Admin::asset()->getRealPath('@admin')) ], 'dcat-admin-assets');
         }
     }
-
+    
     /**
      * 设置 auth 配置.
      *
@@ -183,14 +183,14 @@ class AdminServiceProvider extends ServiceProvider
     protected function loadAdminAuthConfig()
     {
         config(Arr::dot(config('admin.auth', []), 'auth.'));
-
+        
         foreach ((array) config('admin.multi_app') as $app => $enable) {
             if ($enable) {
-                config(Arr::dot(config($app.'.auth', []), 'auth.'));
+                config(Arr::dot(config($app . '.auth', []), 'auth.'));
             }
         }
     }
-
+    
     /**
      * 默认 section 注册.
      */
@@ -199,21 +199,21 @@ class AdminServiceProvider extends ServiceProvider
         Content::composing(function () {
             if (! admin_has_default_section(Admin::SECTION['NAVBAR_USER_PANEL'])) {
                 admin_inject_default_section(Admin::SECTION['NAVBAR_USER_PANEL'], function () {
-                    return view('admin::partials.navbar-user-panel', ['user' => Admin::user()]);
+                    return view('admin::partials.navbar-user-panel', [ 'user' => Admin::user() ]);
                 });
             }
-
+            
             if (! admin_has_default_section(Admin::SECTION['LEFT_SIDEBAR_USER_PANEL'])) {
                 admin_inject_default_section(Admin::SECTION['LEFT_SIDEBAR_USER_PANEL'], function () {
-                    return view('admin::partials.sidebar-user-panel', ['user' => Admin::user()]);
+                    return view('admin::partials.sidebar-user-panel', [ 'user' => Admin::user() ]);
                 });
             }
-
-            // Register menu
+            
             Admin::menu()->register();
+            
         }, true);
     }
-
+    
     public function registerServices()
     {
         $this->app->singleton('admin.app', Application::class);
@@ -237,26 +237,26 @@ class AdminServiceProvider extends ServiceProvider
         $this->app->singleton(ExceptionHandler::class, config('admin.exception_handler') ?: Handler::class);
         $this->app->singleton('admin.translator', Translator::class);
     }
-
+    
     public function registerExtensions()
     {
         Admin::extension()->register();
     }
-
+    
     public function bootExtensions()
     {
         Admin::extension()->boot();
     }
-
+    
     protected function registerBladeDirective()
     {
-        Blade::directive('primary', function ($amt = 0) {
+        Blade::directive('primary', function ( $amt = 0 ) {
             return <<<PHP
-<?php echo admin_color()->primary($amt); ?>
-PHP;
+                <?php echo admin_color()->primary($amt); ?>
+                PHP;
         });
     }
-
+    
     /**
      * 路由中间件注册.
      *
@@ -265,14 +265,14 @@ PHP;
     protected function registerRouteMiddleware()
     {
         $router = $this->app->make('router');
-
+        
         // register route middleware.
         foreach ($this->routeMiddleware as $key => $middleware) {
             $router->aliasMiddleware($key, $middleware);
         }
-
+        
         $disablePermission = ! config('admin.permission.enable');
-
+        
         // register middleware group.
         foreach ($this->middlewareGroups as $key => $middleware) {
             if ($disablePermission) {

@@ -25,7 +25,7 @@ class DummyClass extends BatchAction
      */
     public function handle(Request $request)
     {
-        return $this->response()
+        return $this->receive()
             ->success('Processed successfully: '.json_encode($this->getKey()))
             ->redirect('/');
     }
