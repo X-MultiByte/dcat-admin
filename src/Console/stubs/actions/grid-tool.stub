@@ -25,7 +25,7 @@ class DummyClass extends AbstractTool
      */
     public function handle(Request $request)
     {
-        return $this->response()
+        return $this->receive()
             ->success('Processed successfully.')
             ->redirect('/');
     }

@@ -1,0 +1,10 @@
+<?php
+const {CLASSNAME}_HELPER_LOADED = true;
+
+if ( ! function_exists('{extensionName}_provider') )
+{
+    function {extensionName}_provider()
+    {
+        return app('{extensionName}.provider');
+    }
+}

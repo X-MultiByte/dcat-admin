@@ -1,0 +1,19 @@
+<?php
+
+namespace {namespace}\Models;
+
+/**
+ * @method getDateFormat()
+ */
+trait HasDateTimeFormatter
+{
+    /**
+     * @param  \DateTimeInterface  $date
+     *
+     * @return string
+     */
+    protected function serializeDate( \DateTimeInterface $date ): string
+    {
+        return $date->format($this->getDateFormat());
+    }
+}

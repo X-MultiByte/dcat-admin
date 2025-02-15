@@ -22,7 +22,7 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo'                      => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> &nbsp;Admin',
+    'logo'                      => '<img src="/vendor/dcat-admin/images/logo.png" width="35"> Admin',
     
     /*
     |--------------------------------------------------------------------------
@@ -65,14 +65,10 @@ return [
     |
     */
     'route'                     => [
-        'domain' => env('ADMIN_ROUTE_DOMAIN'),
-        
-        'prefix' => env('ADMIN_ROUTE_PREFIX', 'admin'),
-        
-        'namespace' => 'App\\Admin\\Controllers',
-        
-        'middleware' => ['web', 'admin'],
-        
+        'domain'                    => env('ADMIN_ROUTE_DOMAIN'),
+        'prefix'                    => env('ADMIN_ROUTE_PREFIX', 'admin'),
+        'namespace'                 => 'App\\Admin\\Controllers',
+        'middleware'                => [ 'web', 'admin' ],
         'enable_session_middleware' => false,
     ],
     
@@ -169,7 +165,10 @@ return [
     'grid'                      => [
         
         // The global Grid action display class.
-        'grid_action_class'  => Dcat\Admin\Grid\Displayers\DropdownActions::class,
+        // Dcat\Admin\Grid\Displayers\DropdownActions::class
+        // Dcat\Admin\Grid\Displayers\ButtonActions::class
+        // Dcat\Admin\Grid\Displayers\ContextMenuActions::class
+        'grid_action_class'  => Dcat\Admin\Grid\Displayers\ButtonActions::class,
         
         // The global Grid batch action display class.
         'batch_action_class' => Dcat\Admin\Grid\Tools\BatchActions::class,
@@ -192,6 +191,16 @@ return [
                 'driver' => 'file',
             ],
         ],
+    ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | dcat-admin helpers setting.
+    |--------------------------------------------------------------------------
+    */
+    'form'                      => [
+        'enable_default_icon'        => true,
+        'enable_default_placeholder' => false,
     ],
     
     /*
@@ -247,7 +256,7 @@ return [
         // Whether enable permission bind to menu.
         'permission_bind_menu' => true,
         
-        'default_icon' => 'feather icon-circle',
+        'default_icon' => 'feather icon-chevron-right',
     ],
     
     /*
@@ -429,7 +438,8 @@ return [
             
             ],
             
-            'files' => [
+            // File creation.
+            'files'          => [
                 'view.stub'       => 'resources/views/index.blade.php',
                 'js.stub'         => 'resources/assets/js/index.js',
                 'css.stub'        => 'resources/assets/css/index.css',

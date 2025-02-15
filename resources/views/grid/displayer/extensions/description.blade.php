@@ -1,20 +1,38 @@
-<div style="margin-bottom: 10px">{{ $value }}</div>
+<style>
+    .btn-action {
+        min-width: 80px;
+    }
 
-@if($row->version && empty($row->new_version))
-    {{ trans('admin.version').' '.$row->version }}
+    .hover-display {
+        display: none;
+    }
 
-    @if($settingAction)
-        &nbsp;|&nbsp;
-        {!! $settingAction !!}
+    table tbody tr:hover .hover-display {
+        display: inline;
+    }
+</style>
+<ul class="list-inline">
+    @if($row->version && empty($row->new_version))
+        @if($enabled)
+            <li class="list-inline-item">{!! $disableAction !!}</li>
+        @else
+            <li class="list-inline-item">{!! $enableAction !!}</li>
+        @endif
+        @if($settingAction)
+            <li class="list-inline-item">{!! $settingAction !!}</li>
+        @endif
+    
+    @else
+        <li class="list-inline-item">{!! $updateAction !!}</li>
+        
+        @if($settingAction && $row->new_version)
+            <li class="list-inline-item">{!! $settingAction !!}</li>
+        @endif
+    
     @endif
-@else
-    {!! $updateAction !!}
-
-    @if($settingAction && $row->new_version)
-        &nbsp;|&nbsp;
-        {!! $settingAction !!}
+    @if($row->version && $uninstallAction)
+        <li class="list-inline-item hover-display">
+            {!! $uninstallAction !!}
+        </li>
     @endif
-@endif
-&nbsp;|&nbsp;
-
-<a href="javascript:void(0)">{{ trans('admin.view') }}</a>
+</ul>

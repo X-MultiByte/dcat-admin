@@ -15,30 +15,30 @@ class IndexTest extends TestCase
 {
     public function testIndex()
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function ( Browser $browser ) {
             $browser->visit(admin_base_path('/'))
-                ->pause(200)
-                ->assertSeeText('Administrator')
-                ->assertSeeText('Dashboard')
-                ->assertSeeText('Description...')
-                ->assertSeeText('New Users')
-                ->assertSeeText('New Devices')
-                ->assertSeeText('Tickets')
-                ->assertSeeText(__('admin.documentation'))
-                ->assertSeeText(__('admin.extensions'))
-                ->assertSeeText(__('admin.demo'))
-                ->assertSeeText('GITHUB');
+                    ->pause(200)
+                    ->assertSeeText('Administrator')
+                    ->assertSeeText('Dashboard')
+                    ->assertSeeText('Description...')
+                    ->assertSeeText('New Users')
+                    ->assertSeeText('New Devices')
+                    ->assertSeeText('Tickets')
+                    ->assertSeeText(__('admin.documentation'))
+                    ->assertSeeText(__('admin.extensions'))
+                    ->assertSeeText(__('admin.demo'))
+                    ->assertSeeText('GITHUB');
         });
     }
-
+    
     public function testClickMenu()
     {
-        $this->browse(function (Browser $browser) {
+        $this->browse(function ( Browser $browser ) {
             $browser->visit(admin_base_path('/'))
-                ->within('.main-menu-content', function (Browser $browser) {
-                    $browser
-                        ->pause(500)
-                        ->clickLink($this->translateMenuTitle('Admin'));
+                    ->within('.main-menu-content', function ( Browser $browser ) {
+                        $browser
+                            ->pause(500)
+                            ->clickLink($this->translateMenuTitle('Admin'));
 //                        ->whenTextAvailable($this->translateMenuTitle('Users'), 2)
 //                        ->clickLink($this->translateMenuTitle('Users'))
 //                        ->assertPathIs(admin_base_path('auth/users'))
@@ -48,7 +48,7 @@ class IndexTest extends TestCase
 //                        ->assertPathIs(admin_base_path('auth/permissions'))
 //                        ->clickLink($this->translateMenuTitle('Menu'))
 //                        ->assertPathIs(admin_base_path('auth/menu'))
-//                        ->clickLink($this->translateMenuTitle('Operation log'))
+//                        ->clickLink($this->translateMenuTitle('Installation log'))
 //                        ->assertPathIs(admin_base_path('auth/logs'))
 //                        ->clickLink($this->translateMenuTitle('Helpers'))
 //                        ->whenTextAvailable($this->translateMenuTitle('Extensions'), 2)
@@ -58,17 +58,18 @@ class IndexTest extends TestCase
 //                        ->assertPathIs(admin_base_path('helpers/scaffold'))
 //                        ->clickLink($this->translateMenuTitle('Icons'))
 //                        ->assertPathIs(admin_base_path('helpers/icons'));
-                });
+                    });
         });
     }
-
+    
     /**
      * 翻译菜单标题.
      *
      * @param $title
+     *
      * @return string
      */
-    protected function translateMenuTitle($title)
+    protected function translateMenuTitle( $title )
     {
         return Admin::menu()->translate($title);
     }

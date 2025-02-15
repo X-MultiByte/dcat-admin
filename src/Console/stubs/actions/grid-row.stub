@@ -27,7 +27,7 @@ class DummyClass extends RowAction
     {
         // dump($this->getKey());
 
-        return $this->response()
+        return $this->receive()
             ->success('Processed successfully: '.$this->getKey())
             ->redirect('/');
     }

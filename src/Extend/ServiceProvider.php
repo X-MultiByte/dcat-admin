@@ -3,18 +3,21 @@
 namespace Dcat\Admin\Extend;
 
 use Dcat\Admin\Admin;
-use Dcat\Admin\Exception\RuntimeException;
-use Dcat\Admin\Support\ComposerProperty;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Illuminate\Support\Facades\File;
+use Dcat\Admin\Support\ComposerProperty;
+use Dcat\Admin\Exception\RuntimeException;
 use Symfony\Component\Console\Output\NullOutput;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
 
 abstract class ServiceProvider extends LaravelServiceProvider
 {
     use CanImportMenu;
     
-    const TYPE_THEME = 'theme';
+    public const TYPE_THEME = 'theme';
+    
+    public const DEFAULT_LOGO_PATH = __DIR__ . '/../../resources/dist/images/extension/logo.png';
     
     /**
      * @var ComposerProperty
@@ -71,7 +74,12 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     protected $exceptRoutes = [];
     
-    public function __construct($app)
+    /**
+     * @var string
+     */
+    protected $routeDir = __DIR__ . '/../routes';
+    
+    public function __construct( $app )
     {
         parent::__construct($app);
         
@@ -85,7 +93,8 @@ abstract class ServiceProvider extends LaravelServiceProvider
     {
         $this->autoRegister();
         
-        if ($this->disabled()) {
+        if ($this->disabled())
+        {
             return;
         }
         
@@ -99,23 +108,28 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function init()
     {
-        if ($views = $this->getViewPath()) {
+        if ($views = $this->getViewPath())
+        {
             $this->loadViewsFrom($views, $this->getName());
         }
         
-        if ($lang = $this->getLangPath()) {
+        if ($lang = $this->getLangPath())
+        {
             $this->loadTranslationsFrom($lang, $this->getName());
         }
         
-        if ($routes = $this->getRoutes()) {
+        if ($routes = $this->getRoutes())
+        {
             $this->registerRoutes($routes);
         }
         
-        if ($this->middleware()) {
+        if ($this->middleware())
+        {
             $this->addMiddleware();
         }
         
-        if ($this->exceptRoutes) {
+        if ($this->exceptRoutes)
+        {
             $this->addExceptRoutes();
         }
         
@@ -127,7 +141,8 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     protected function autoRegister()
     {
-        if ($this->getName()) {
+        if ($this->getName())
+        {
             return;
         }
         
@@ -141,7 +156,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function getName()
     {
-        return $this->name ?: ($this->name = str_replace('/', '.', $this->getPackageName()));
+        return $this->name ?: ( $this->name = str_replace('/', '.', $this->getPackageName()) );
     }
     
     /**
@@ -151,7 +166,8 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function getAlias()
     {
-        if ( !$this->composerProperty) {
+        if (! $this->composerProperty)
+        {
             return;
         }
         
@@ -165,8 +181,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function getPackageName()
     {
-        if ( !$this->packageName) {
-            if ( !$this->composerProperty) {
+        if (! $this->packageName)
+        {
+            if (! $this->composerProperty)
+            {
                 return;
             }
             
@@ -221,25 +239,27 @@ abstract class ServiceProvider extends LaravelServiceProvider
     /**
      * 获取扩展包路径.
      *
-     * @param  string  $path
+     * @param  null|string  $path
      *
      * @return string
      *
-     * @throws \ReflectionException
+     * @throws \Dcat\Admin\Exception\RuntimeException
      */
-    public function path(?string $path = null)
+    public function path( ?string $path = null )
     {
-        if ( !$this->path) {
-            $this->path = realpath(dirname((new \ReflectionClass(static::class))->getFileName()).'/..');
+        if (! $this->path)
+        {
+            $this->path = realpath(dirname(( new \ReflectionClass(static::class) )->getFileName()) . '/..');
             
-            if ( !is_dir($this->path)) {
+            if (! is_dir($this->path))
+            {
                 throw new RuntimeException("The {$this->path} is not a directory.");
             }
         }
         
         $path = ltrim($path, '/');
         
-        return $path ? $this->path.'/'.$path : $this->path;
+        return $path ? $this->path . '/' . $path : $this->path;
     }
     
     /**
@@ -257,22 +277,46 @@ abstract class ServiceProvider extends LaravelServiceProvider
     /**
      * @return string
      */
-    public function getLogoBase64()
+    public function getLogoBase64( $path = null )
     {
-        try {
-            $logo = $this->getLogoPath();
+        try
+        {
+            $logo = is_null($path) ? $this->getLogoPath() : $path;
             
-            if (is_file($logo) && $file = fopen($logo, 'rb', 0)) {
+            if (is_file($logo) && $file = fopen($logo, 'rb', 0))
+            {
                 $content = fread($file, filesize($logo));
                 fclose($file);
                 $base64 = chunk_split(base64_encode($content));
                 
-                return 'data:image/png;base64,'.$base64;
+                return 'data:image/png;base64,' . $base64;
             }
         }
-        catch (\ReflectionException $e) {
+        catch (\ReflectionException $e)
+        {
         }
     }
+    
+    /**
+     * Return the default logo path.
+     *
+     * @return string
+     */
+    public function getDefaultLogoPath()
+    {
+        return self::DEFAULT_LOGO_PATH;
+    }
+    
+    /**
+     * Get the default logo with base64 encoded.
+     *
+     * @return string
+     */
+    public function getDefaultLogo()
+    {
+        return $this->getLogoBase64($this->getDefaultLogoPath());
+    }
+    
     
     /**
      * 判断扩展是否启用.
@@ -291,7 +335,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function disabled()
     {
-        return !$this->enabled();
+        return ! $this->enabled();
     }
     
     /**
@@ -302,19 +346,22 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return mixed
      */
-    public function config($key = null, $default = null)
+    public function config( $key = null, $default = null )
     {
-        if ($this->config === null) {
+        if ($this->config === null)
+        {
             $this->initConfig();
         }
         
-        if (is_array($key)) {
+        if (is_array($key))
+        {
             $this->saveConfig($key);
             
             return;
         }
         
-        if ($key === null) {
+        if ($key === null)
+        {
             return $this->config;
         }
         
@@ -326,11 +373,11 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @param  array  $config
      */
-    public function saveConfig(array $config)
+    public function saveConfig( array $config )
     {
         $this->config = array_merge($this->config, $config);
         
-        Admin::setting()->save([$this->getConfigKey() => $this->serializeConfig($this->config)]);
+        Admin::setting()->save([ $this->getConfigKey() => $this->serializeConfig($this->config) ]);
     }
     
     /**
@@ -350,7 +397,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @throws \Exception
      */
-    public function update($currentVersion, $stopOnVersion)
+    public function update( $currentVersion, $stopOnVersion )
     {
         $this->refreshMenu();
     }
@@ -368,7 +415,8 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     public function publishable()
     {
-        if ($assets = $this->getAssetPath()) {
+        if ($assets = $this->getAssetPath())
+        {
             $this->publishes([
                 $assets => $this->getPublishsPath(),
             ], $this->getName());
@@ -383,7 +431,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
     protected function getPublishsPath()
     {
         return public_path(
-            Admin::asset()->getRealPath('@extension/'.str_replace('.', '/', $this->getName()))
+            Admin::asset()->getRealPath('@extension/' . str_replace('.', '/', $this->getName()))
         );
     }
     
@@ -392,9 +440,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @param $callback
      */
-    public function registerRoutes($callback)
+    public function registerRoutes( $callback )
     {
-        Admin::app()->routes(function ($router) use ($callback) {
+        Admin::app()->routes(function ( $router ) use ( $callback )
+        {
             $router->group([
                 'prefix'     => config('admin.route.prefix'),
                 'middleware' => config('admin.route.middleware'),
@@ -431,7 +480,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
         ]);
     }
     
-    protected function mixMiddleware(array $middle)
+    protected function mixMiddleware( array $middle )
     {
         Admin::mixMiddlewareGroup($middle);
     }
@@ -441,11 +490,13 @@ abstract class ServiceProvider extends LaravelServiceProvider
      */
     protected function addExceptRoutes()
     {
-        if ( !empty($this->exceptRoutes['permission'])) {
+        if (! empty($this->exceptRoutes['permission']))
+        {
             Admin::context()->merge('permission.except', (array) $this->exceptRoutes['permission']);
         }
         
-        if ( !empty($this->exceptRoutes['auth'])) {
+        if (! empty($this->exceptRoutes['auth']))
+        {
             Admin::context()->merge('auth.except', (array) $this->exceptRoutes['auth']);
         }
     }
@@ -484,11 +535,15 @@ abstract class ServiceProvider extends LaravelServiceProvider
      * 获取路由地址.
      *
      * @return string
-     *
-     * @throws \ReflectionException
+     * @throws \Dcat\Admin\Exception\RuntimeException
      */
     final public function getRoutes()
     {
+        if (! File::exists($this->path('routes/admin.php')) && File::exists($this->path('src/Http/routes.php')))
+        {
+            File::move($this->path('src/Http/routes.php'), $this->path('routes/admin.php'));
+        }
+        
         $path = $this->path('routes/admin.php');
         
         return is_file($path) ? $path : null;
@@ -499,7 +554,7 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return $this
      */
-    public function withComposerProperty(ComposerProperty $composerProperty)
+    public function withComposerProperty( ComposerProperty $composerProperty )
     {
         $this->composerProperty = $composerProperty;
         
@@ -514,11 +569,12 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return mixed
      */
-    public static function setting($key = null, $value = null)
+    public static function setting( $key = null, $value = null )
     {
         $extension = static::instance();
         
-        if ($extension && $extension instanceof ServiceProvider) {
+        if ($extension && $extension instanceof ServiceProvider)
+        {
             return $extension->config($key, $value);
         }
     }
@@ -532,9 +588,9 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return array|string|null
      */
-    public static function trans($key, $replace = [], $locale = null)
+    public static function trans( $key, $replace = [], $locale = null )
     {
-        return trans(static::instance()->getName().'::'.$key, $replace, $locale);
+        return trans(static::instance()->getName() . '::' . $key, $replace, $locale);
     }
     
     /**
@@ -555,9 +611,10 @@ abstract class ServiceProvider extends LaravelServiceProvider
         $asset = Admin::asset();
         
         // 注册静态资源路径别名
-        $asset->alias($this->getName().'.path', '@extension/'.$this->getPackageName());
+        $asset->alias($this->getName() . '.path', '@extension/' . $this->getPackageName());
         
-        if ($this->js || $this->css) {
+        if ($this->js || $this->css)
+        {
             $asset->alias($this->getName(), [
                 'js'  => $this->formatAssetFiles($this->js),
                 'css' => $this->formatAssetFiles($this->css),
@@ -570,17 +627,19 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return mixed
      */
-    protected function formatAssetFiles($files)
+    protected function formatAssetFiles( $files )
     {
-        if (is_array($files)) {
-            return array_map([$this, 'formatAssetFiles'], $files);
+        if (is_array($files))
+        {
+            return array_map([ $this, 'formatAssetFiles' ], $files);
         }
         
-        if (URL::isValidUrl($files)) {
+        if (URL::isValidUrl($files))
+        {
             return $files;
         }
         
-        return '@'.$this->getName().'.path/'.trim($files, '/');
+        return '@' . $this->getName() . '.path/' . trim($files, '/');
     }
     
     /**
@@ -598,9 +657,9 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return false|string
      */
-    protected function serializeConfig($config)
+    protected function serializeConfig( $config )
     {
-        return json_encode($config);
+        return json_encode(value: $config, flags: JSON_THROW_ON_ERROR);
     }
     
     /**
@@ -608,8 +667,8 @@ abstract class ServiceProvider extends LaravelServiceProvider
      *
      * @return array
      */
-    protected function unserializeConfig($config)
+    protected function unserializeConfig( $config )
     {
-        return json_decode($config, true);
+        return json_decode(json: $config, associative: true, depth: 512, flags: JSON_THROW_ON_ERROR);
     }
 }

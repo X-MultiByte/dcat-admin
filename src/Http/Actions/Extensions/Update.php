@@ -9,20 +9,19 @@ class Update extends RowAction
 {
     public function title()
     {
-        $replace = ['version' => $this->row->extension->getLocalLatestVersion()];
-
-        return sprintf('<b>%s</b>', trans('admin.upgrade_to_version', $replace));
+        $title = ( $this->row->version === '0' ) ? trans('admin.install') : trans('admin.update');
+        
+        return "<span class=\"btn btn-success btn-sm  btn-action\">{$title}</span>";
     }
-
+    
     public function handle()
     {
-        $manager = Admin::extension()
-            ->updateManager()
-            ->update($this->getKey());
-
+        $manager = Admin::extension()->updateManager()->update($this->getKey());
+        
         return $this
             ->response()
             ->success(implode('<br>', $manager->notes))
+            ->timeout(3)
             ->refresh();
     }
 }

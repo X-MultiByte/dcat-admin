@@ -1,0 +1,232 @@
+<?php
+
+namespace {namespace}\Concerns;
+
+use {ServiceProviderWithNamespace};
+
+trait Directories
+{
+    public final const SRC_DIR                 = {ServiceProviderName}::ROOT_DIR . 'src';
+    public final const CONFIG_DIR              = {ServiceProviderName}::ROOT_DIR . 'config';
+    public final const ROUTES_DIR              = {ServiceProviderName}::ROOT_DIR . 'routes';
+    public final const RESOURCES_DIR           = {ServiceProviderName}::ROOT_DIR . 'resources';
+    public final const LANGUAGE_DIR            = {ServiceProviderName}::RESOURCES_DIR . DIRECTORY_SEPARATOR . 'lang';
+    public final const DATABASE_DIR            = {ServiceProviderName}::ROOT_DIR . 'database';
+    public final const DATABASE_MIGRATIONS_DIR = {ServiceProviderName}::DATABASE_DIR . DIRECTORY_SEPARATOR . 'migrations';
+    public final const DATABASE_SEEDERS_DIR    = {ServiceProviderName}::DATABASE_DIR . DIRECTORY_SEPARATOR . 'seeders';
+
+    /**
+     * Return the extension root path.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function extensionPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getRootDir(), $path);
+    }
+
+    /**
+     * Return a given path with the package directory path.
+     *
+     * @param  string  $dir
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    protected static function getPath( string $dir, ?string $path = null ): string
+    {
+        if ( $path ) {
+            $path = str_split($path)[0] === DIRECTORY_SEPARATOR ? $path : DIRECTORY_SEPARATOR . $path;
+        }
+
+        return $dir . $path;
+    }
+
+    /**
+     * Return the package root directory
+     *
+     * @return string
+     */
+    public static function getRootDir(): string
+    {
+        return realpath({ServiceProviderName}::ROOT_DIR);
+    }
+
+    /**
+     * Returns the resource path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function resourcesPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getResourcesDir(), $path);
+    }
+
+    /**
+     * Return the package resources directory.
+     *
+     * @return string
+     */
+    public static function getResourcesDir(): string
+    {
+        return realpath({ServiceProviderName}::RESOURCES_DIR);
+    }
+
+    /**
+     * Returns the database path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function databasePath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getDatabaseDir(), $path);
+    }
+
+    /**
+     * Return the package database directory.
+     *
+     * @return string
+     */
+    public static function getDatabaseDir(): string
+    {
+        return realpath({ServiceProviderName}::DATABASE_DIR);
+    }
+
+    /**
+     * Returns the src path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function srcPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getSrcDir(), $path);
+    }
+
+    /**
+     * Return the package source directory.
+     *
+     * @return string
+     */
+    public static function getSrcDir(): string
+    {
+        return realpath({ServiceProviderName}::SRC_DIR);
+    }
+
+    /**
+     * Returns the route path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function routePath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getRoutesDir(), $path);
+    }
+
+    /**
+     * Return the package routes directory.
+     *
+     * @return string
+     */
+    public static function getRoutesDir(): string
+    {
+        return realpath({ServiceProviderName}::ROUTES_DIR);
+    }
+
+    /**
+     * Returns the migration path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function migrationPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getDatabaseMigrationsDir(), $path);
+    }
+
+    /**
+     * Return the package database migrations directory.
+     *
+     * @return string
+     */
+    public static function getDatabaseMigrationsDir(): string
+    {
+        return realpath({ServiceProviderName}::DATABASE_MIGRATIONS_DIR);
+    }
+
+    /**
+     * Returns the seeder path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function seederPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getDatabaseSeedersDir(), $path);
+    }
+
+    /**
+     * Return the package database seeders directory.
+     *
+     * @return string
+     */
+    public static function getDatabaseSeedersDir(): string
+    {
+        return realpath({ServiceProviderName}::DATABASE_SEEDERS_DIR);
+    }
+
+    /**
+     * Returns the config path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function configPath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getConfigDir(), $path);
+    }
+
+    /**
+     * Return the package config directory.
+     *
+     * @return string
+     */
+    public static function getConfigDir(): string
+    {
+        return realpath({ServiceProviderName}::CONFIG_DIR);
+    }
+
+    /**
+     * Returns the language path with the given value.
+     *
+     * @param  null|string  $path
+     *
+     * @return string
+     */
+    public static function languagePath( ?string $path = null ): string
+    {
+        return {ServiceProviderName}::getPath({ServiceProviderName}::getLanguageDir(), $path);
+    }
+
+    /**
+     * Return the package language directory.
+     *
+     * @return string
+     */
+    public static function getLanguageDir(): string
+    {
+        return realpath({ServiceProviderName}::LANGUAGE_DIR);
+    }
+}

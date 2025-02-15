@@ -10,12 +10,12 @@ use Illuminate\Contracts\Support\Renderable;
 class Navbar implements Renderable
 {
     use HasBuilderEvents;
-
+    
     /**
      * @var array
      */
     protected $elements = [];
-
+    
     /**
      * Navbar constructor.
      */
@@ -25,44 +25,47 @@ class Navbar implements Renderable
             'left'  => collect(),
             'right' => collect(),
         ];
-
+        
         $this->callResolving();
     }
-
+    
     /**
      * @param  string|\Closure|Renderable|Htmlable  $element
+     *
      * @return $this
      */
     public function left($element)
     {
         $this->elements['left']->push($element);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string|\Closure|Renderable|Htmlable  $element
+     *
      * @return $this
      */
     public function right($element)
     {
         $this->elements['right']->push($element);
-
+        
         return $this;
     }
-
+    
     /**
      * @param  string  $part
+     *
      * @return mixed
      */
     public function render($part = 'right')
     {
         $this->callComposing($part);
-
-        if (! isset($this->elements[$part]) || $this->elements[$part]->isEmpty()) {
+        
+        if ( !isset($this->elements[$part]) || $this->elements[$part]->isEmpty()) {
             return '';
         }
-
+        
         return $this->elements[$part]->map([Helper::class, 'render'])->implode('');
     }
 }

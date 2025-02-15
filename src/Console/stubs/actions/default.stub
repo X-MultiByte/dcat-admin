@@ -27,7 +27,7 @@ class DummyClass extends Action
     {
         // dump($this->getKey());
 
-        return $this->response()->success('Processed successfully.')->redirect('/');
+        return $this->receive()->success('Processed successfully.')->redirect('/');
     }
 
     /**

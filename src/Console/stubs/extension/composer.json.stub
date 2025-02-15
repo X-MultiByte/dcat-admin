@@ -1,9 +1,8 @@
 {
-    "name": "{package}",
+    "name": "{package}",{alias}
     "description": "{description}",
-    "type": "{type}",
+    "type": "{type}",{homepage}
     "keywords": [{keywords}],
-    "homepage": "https://github.com/{package}",
     "license": "{license}",
     "authors": [
         {authors}

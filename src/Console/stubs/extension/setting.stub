@@ -6,11 +6,27 @@ use Dcat\Admin\Extend\Setting as Form;
 
 class Setting extends Form
 {
+    /**
+     * Settings.
+     *
+     * @return void
+     */
     public function form()
     {
         $this->text('key1')->required();
         $this->text('key2')->required();
     }
 
-    public function
+    /**
+     * Return default settings.
+     *
+     * @return array
+     */
+    public function default()
+    {
+        return [
+           'key1' => 'key1 value',
+           'key2' => 'key2 value',
+        ];
+    }
 }

@@ -22,32 +22,32 @@ class Administrator extends Model implements AuthenticatableContract, Authorizab
     use Authenticatable,
         HasPermissions,
         HasDateTimeFormatter;
-
+    
     const DEFAULT_ID = 1;
-
-    protected $fillable = ['username', 'password', 'name', 'avatar'];
-
+    
+    protected $fillable = [ 'username', 'password', 'name', 'avatar' ];
+    
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array  $attributes
      */
-    public function __construct(array $attributes = [])
+    public function __construct( array $attributes = [] )
     {
         $this->init();
-
+        
         parent::__construct($attributes);
     }
-
+    
     protected function init()
     {
         $connection = config('admin.database.connection') ?: config('database.default');
-
+        
         $this->setConnection($connection);
-
+        
         $this->setTable(config('admin.database.users_table'));
     }
-
+    
     /**
      * Get avatar attribute.
      *
@@ -56,18 +56,18 @@ class Administrator extends Model implements AuthenticatableContract, Authorizab
     public function getAvatar()
     {
         $avatar = $this->avatar;
-
-        if ($avatar) {
-            if (! URL::isValidUrl($avatar)) {
+        
+        if ( $avatar ) {
+            if ( ! URL::isValidUrl($avatar) ) {
                 $avatar = Storage::disk(config('admin.upload.disk'))->url($avatar);
             }
-
+            
             return $avatar;
         }
-
+        
         return admin_asset(config('admin.default_avatar') ?: '@admin/images/default-avatar.jpg');
     }
-
+    
     /**
      * A user has and belongs to many roles.
      *
@@ -76,19 +76,20 @@ class Administrator extends Model implements AuthenticatableContract, Authorizab
     public function roles(): BelongsToMany
     {
         $pivotTable = config('admin.database.role_users_table');
-
+        
         $relatedModel = config('admin.database.roles_model');
-
+        
         return $this->belongsToMany($relatedModel, $pivotTable, 'user_id', 'role_id')->withTimestamps();
     }
-
+    
     /**
      * 判断是否允许查看菜单.
      *
      * @param  array|Menu  $menu
+     *
      * @return bool
      */
-    public function canSeeMenu($menu)
+    public function canSeeMenu( $menu )
     {
         return true;
     }

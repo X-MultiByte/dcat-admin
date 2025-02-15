@@ -13,7 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait UploadField
 {
-    use HasUploadedFile {
+    use HasUploadedFile
+    {
         HasUploadedFile::disk as _disk;
     }
     
@@ -85,7 +86,8 @@ trait UploadField
     {
         $this->disk(config('admin.upload.disk'));
         
-        if ( !$this->storage) {
+        if (! $this->storage)
+        {
             $this->storage = false;
         }
     }
@@ -97,9 +99,10 @@ trait UploadField
      *
      * @return void
      */
-    public function renameIfExists(UploadedFile $file)
+    public function renameIfExists( UploadedFile $file )
     {
-        if ($this->getStorage()->exists("{$this->getDirectory()}/$this->name")) {
+        if ($this->getStorage()->exists("{$this->getDirectory()}/$this->name"))
+        {
             $this->name = $this->generateUniqueName($file);
         }
     }
@@ -119,21 +122,25 @@ trait UploadField
      *
      * @return string
      */
-    protected function getStoreName(UploadedFile $file)
+    protected function getStoreName( UploadedFile $file )
     {
-        if ($this->useUniqueName) {
+        if ($this->useUniqueName)
+        {
             return $this->generateUniqueName($file);
         }
         
-        if ($this->useSequenceName) {
+        if ($this->useSequenceName)
+        {
             return $this->generateSequenceName($file);
         }
         
-        if ($this->name instanceof \Closure) {
+        if ($this->name instanceof \Closure)
+        {
             $this->name = $this->name->call($this->values(), $file);
         }
         
-        if ($this->name !== '' && is_string($this->name)) {
+        if ($this->name !== '' && is_string($this->name))
+        {
             return $this->name;
         }
         
@@ -147,7 +154,8 @@ trait UploadField
      */
     public function getDirectory()
     {
-        if ($this->directory instanceof \Closure) {
+        if ($this->directory instanceof \Closure)
+        {
             $this->directory = $this->directory->call($this->values(), $this->form);
         }
         
@@ -161,14 +169,14 @@ trait UploadField
      *
      * @return $this
      */
-    public function retainable(bool $retainable = true)
+    public function retainable( bool $retainable = true )
     {
         $this->retainable = $retainable;
         
         return $this;
     }
     
-    public function saveFullUrl(bool $value = true)
+    public function saveFullUrl( bool $value = true )
     {
         $this->saveFullUrl = $value;
         
@@ -182,23 +190,26 @@ trait UploadField
      *
      * @return Response
      */
-    public function upload(UploadedFile $file)
+    public function upload( UploadedFile $file )
     {
         $request = request();
         
         $id = $request->get('_id');
         
-        if ( !$id) {
+        if (! $id)
+        {
             return $this->responseErrorMessage('Missing id');
         }
         
-        if ($errors = $this->getValidationErrors($file)) {
+        if ($errors = $this->getValidationErrors($file))
+        {
             return $this->responseValidationMessage($errors);
         }
         
         $this->name = $this->getStoreName($file);
         
-        if ($this->options['override']) {
+        if ($this->options['override'])
+        {
             $this->remove();
         }
         
@@ -206,13 +217,17 @@ trait UploadField
         
         $this->prepareFile($file);
         
-        if ( !is_null($this->storagePermission)) {
+        if (! is_null($this->storagePermission))
+        {
             $result = $this->getStorage()->putFileAs($this->getDirectory(), $file, $this->name, $this->storagePermission);
-        } else {
+        }
+        else
+        {
             $result = $this->getStorage()->putFileAs($this->getDirectory(), $file, $this->name);
         }
         
-        if ($result) {
+        if ($result)
+        {
             $path = $this->getUploadPath();
             $url  = $this->objectUrl($path);
             
@@ -226,7 +241,8 @@ trait UploadField
     
     public function remove()
     {
-        if ($this->getStorage()->exists("{$this->getDirectory()}/$this->name")) {
+        if ($this->getStorage()->exists("{$this->getDirectory()}/$this->name"))
+        {
             $this->getStorage()->delete("{$this->getDirectory()}/$this->name");
         }
     }
@@ -234,7 +250,7 @@ trait UploadField
     /**
      * @param  UploadedFile  $file
      */
-    protected function prepareFile(UploadedFile $file) {}
+    protected function prepareFile( UploadedFile $file ) {}
     
     /**
      * Specify the directory and name for upload file.
@@ -244,7 +260,7 @@ trait UploadField
      *
      * @return $this
      */
-    public function move($directory, $name = null)
+    public function move( $directory, $name = null )
     {
         $this->dir($directory);
         
@@ -260,9 +276,10 @@ trait UploadField
      *
      * @return $this
      */
-    public function dir($dir)
+    public function dir( $dir )
     {
-        if ($dir) {
+        if ($dir)
+        {
             $this->directory = $dir;
         }
         
@@ -276,9 +293,10 @@ trait UploadField
      *
      * @return $this
      */
-    public function name($name)
+    public function name( $name )
     {
-        if ($name) {
+        if ($name)
+        {
             $this->name = $name;
         }
         
@@ -316,9 +334,9 @@ trait UploadField
      *
      * @return string
      */
-    protected function generateUniqueName(UploadedFile $file)
+    protected function generateUniqueName( UploadedFile $file )
     {
-        return md5(uniqid()).'.'.$file->getClientOriginalExtension();
+        return md5(uniqid()) . '.' . $file->getClientOriginalExtension();
     }
     
     /**
@@ -328,16 +346,17 @@ trait UploadField
      *
      * @return string
      */
-    protected function generateSequenceName(UploadedFile $file)
+    protected function generateSequenceName( UploadedFile $file )
     {
         $index        = 1;
         $extension    = $file->getClientOriginalExtension();
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $newName      = $originalName.'_'.$index.'.'.$extension;
+        $newName      = $originalName . '_' . $index . '.' . $extension;
         
-        while ($this->getStorage()->exists("{$this->getDirectory()}/$newName")) {
+        while ($this->getStorage()->exists("{$this->getDirectory()}/$newName"))
+        {
             $index++;
-            $newName = $originalName.'_'.$index.'.'.$extension;
+            $newName = $originalName . '_' . $index . '.' . $extension;
         }
         
         return $newName;
@@ -348,16 +367,18 @@ trait UploadField
      *
      * @return bool|\Illuminate\Support\MessageBag
      */
-    protected function getValidationErrors(UploadedFile $file)
+    protected function getValidationErrors( UploadedFile $file )
     {
         $data = $rules = $attributes = [];
         
         // 如果文件上传有错误，则直接返回错误信息
-        if ($file->getError() !== UPLOAD_ERR_OK) {
+        if ($file->getError() !== UPLOAD_ERR_OK)
+        {
             return $file->getErrorMessage();
         }
         
-        if ( !$fieldRules = $this->getRules()) {
+        if (! $fieldRules = $this->getRules())
+        {
             return false;
         }
         
@@ -368,7 +389,8 @@ trait UploadField
         /* @var \Illuminate\Validation\Validator $validator */
         $validator = Validator::make($data, $rules, $this->validationMessages, $attributes);
         
-        if ( !$validator->passes()) {
+        if (! $validator->passes())
+        {
             $errors = $validator->errors()->getMessages()[$this->column];
             
             return implode('<br> ', $errors);
@@ -390,9 +412,10 @@ trait UploadField
      *
      * @param $file
      */
-    public function destroyIfChanged($file)
+    public function destroyIfChanged( $file )
     {
-        if ( !$file || !$this->original) {
+        if (! $file || ! $this->original)
+        {
             return $this->destroy();
         }
         
@@ -407,26 +430,33 @@ trait UploadField
      *
      * @param  string|array  $path
      */
-    public function deleteFile($paths)
+    public function deleteFile( $paths )
     {
-        if ( !$paths || $this->retainable) {
+        if (! $paths || $this->retainable)
+        {
             return;
         }
         
-        if (method_exists($this, 'destroyThumbnail')) {
+        if (method_exists($this, 'destroyThumbnail'))
+        {
             $this->destroyThumbnail($paths);
         }
         
         $storage = $this->getStorage();
         
-        foreach ((array) $paths as $path) {
-            if ($storage->exists($path)) {
+        foreach ((array) $paths as $path)
+        {
+            if ($storage->exists($path))
+            {
                 $storage->delete($path);
-            } else {
+            }
+            else
+            {
                 $prefix = $storage->url('');
                 $path   = str_replace($prefix, '', $path);
                 
-                if ($storage->exists($path)) {
+                if ($storage->exists($path))
+                {
                     $storage->delete($path);
                 }
             }
@@ -440,7 +470,8 @@ trait UploadField
      */
     public function getStorage()
     {
-        if ($this->storage === null) {
+        if ($this->storage === null)
+        {
             $this->initStorage();
         }
         
@@ -450,21 +481,24 @@ trait UploadField
     /**
      * Set disk for storage.
      *
-     * @param  string  $disk  Disks defined in `config/filesystems.php`.
+     * @param  string  $disk    Disks defined in `config/filesystems.php`.
      *
      * @return $this
      *
      * @throws \Exception
      */
-    public function disk($disk)
+    public function disk( $disk )
     {
-        try {
+        try
+        {
             $this->storage = Storage::disk($disk);
         }
-        catch (\Exception $exception) {
-            if ( !array_key_exists($disk, config('filesystems.disks'))) {
+        catch (\Exception $exception)
+        {
+            if (! array_key_exists($disk, config('filesystems.disks')))
+            {
                 admin_error(
-                    'Config error.',
+                    'Configuration error.',
                     "Disk [$disk] not configured, please add a disk config in `config/filesystems.php`."
                 );
                 
@@ -484,9 +518,10 @@ trait UploadField
      *
      * @return string
      */
-    public function objectUrl($path)
+    public function objectUrl( $path )
     {
-        if (URL::isValidUrl($path)) {
+        if (URL::isValidUrl($path))
+        {
             return $path;
         }
         
@@ -498,7 +533,7 @@ trait UploadField
      *
      * @return $this
      */
-    public function storagePermission($permission)
+    public function storagePermission( $permission )
     {
         $this->storagePermission = $permission;
         

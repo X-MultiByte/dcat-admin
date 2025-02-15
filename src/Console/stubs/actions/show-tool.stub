@@ -27,7 +27,7 @@ class DummyClass extends AbstractTool
     {
     	// dump($this->getKey());
 
-        return $this->response()
+        return $this->receive()
             ->success('Processed successfully.')
             ->redirect('/');
     }
