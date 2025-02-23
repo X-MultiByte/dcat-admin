@@ -18,6 +18,7 @@
       "email": "roy@xmultibyte.com"
     }
   ],
+  "version": "1.0.0",
   "require": {
     "php": ">=8.2",
     "laravel/framework": "~9.0|~10.0",
